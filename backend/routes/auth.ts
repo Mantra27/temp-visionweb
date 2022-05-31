@@ -56,12 +56,6 @@ router.post("/login", async (req:any, res:any)=>{
     console.log("trying to log in");
 });
 
-router.post("/fp", async (req:any, res:any, next:any)=>{
-    const {email} = req.body;
-    console.log(req.body)
-    res.send("hello")
-})
-
 //forgot-username....
 // router.post("/fu", async (req:any, res:any, next:any)=>{
     

@@ -22,7 +22,7 @@ console.log("starting the server...");
 
 //trying to connect to the db
 
-mongoose.connect("mongodb+srv://dicot-user-93:A1O2SKNmbWYTQtKY@cluster0.q2qww.mongodb.net/dicotv2?retryWrites=true&w=majority", { useNewUrlParser: true, useUnifiedTopology: true})
+mongoose.connect("", { useNewUrlParser: true, useUnifiedTopology: true})
     .then((res:any)=>{
 
         console.log(`------established connection to the server------(${8080})`); 

@@ -13,14 +13,16 @@
     <p>
         <input type="button" value="SUBMIT" onClick="Fetch()">
     <script>
+        const portal = '<%=portal%>';
         function Fetch(){
+            
             if((document.getElementById("pw").value != document.getElementById("cpw").value) || document.getElementById("cpw").value.trim() == ''){alert("invalid/incorrect password format(maybe they're not matching)")}
                 fetch(`http://localhost:8080/auth/fp`, {
-                    headers: {
-                    "Content-Type": "application/json",
-                    },
-                    method: "POST",
-                    body: JSON.stringify({password: document.getElementById("cpw").value}),
+                        headers: {
+                        "Content-Type": "application/json",
+                        },
+                        method: "POST",
+                        body: JSON.stringify({password: document.getElementById("cpw").value, portal: portal, submittedTime:new Date().getTime()}),
                     })
 
                 .then((e)=>{e.json().then((rexx)=>{rexx.json().then((console.log(rexx)))})});
