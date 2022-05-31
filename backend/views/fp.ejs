@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    New Password: <input type="password" name="password" id="pw">
+    <p>
+    Confirm New Password: <input type="password" name="cofirm-password" id="cpw">
+    <p>
+        <input type="button" value="SUBMIT" onClick="Fetch()">
+    <script>
+        function Fetch(){
+            if((document.getElementById("pw").value != document.getElementById("cpw").value) || document.getElementById("cpw").value.trim() == ''){alert("invalid/incorrect password format(maybe they're not matching)")}
+                fetch(`http://localhost:8080/auth/fp`, {
+                    headers: {
+                    "Content-Type": "application/json",
+                    },
+                    method: "POST",
+                    body: JSON.stringify({password: document.getElementById("cpw").value}),
+                    })
+
+                .then((e)=>{e.json().then((rexx)=>{rexx.json().then((console.log(rexx)))})});
+            }
+    </script>
+</body>
+</html>

@@ -10,7 +10,6 @@ router.post("/register", async (req:any, res:any)=>{
     const {username, email, password, country, contactNumber} = req.body;
     if(!username || !email || !password || !contactNumber || !country) return res.status(404).send({message: "any of the query is missing from the client's end."});
     
-    
     await User.findOne({email : email}).exec(async (err2:any,user:any)=>{
         if(!user){
         	await User.findOne({username : username}).exec(async (err2:any,user2:any)=>{
@@ -24,7 +23,7 @@ router.post("/register", async (req:any, res:any)=>{
                     });
                         bcrypt.genSalt(10, (err:any,salt:any)=> 
                                 bcrypt.hash(setNewUser.password,salt, (err:any, hash:any)=> {
-                                        if(err) return res.status(404).send({message:"error generating hash from the server, mail us on nandan@dicot.in"});
+                                        if(err) return res.status(404).send({status: 202, message:"error generating hash from the server, mail us on nandan@dicot.in"});
                                         setNewUser.password = hash;
                                         setNewUser.save()
                                         .then((value:any)=>{
@@ -48,9 +47,25 @@ router.post("/register", async (req:any, res:any)=>{
     });
 });
 
-// router.post("/login", (req:any, res:any)=>{
-//     console.log("trying to log in");
-// });
+router.post("/login", async (req:any, res:any)=>{
+    const {email, password} = req.body;
+    if(!email && !password) return res.status(202).send({status: 202, message:"username or password is in invalid format from the client's end"});
+    await User.findOne({email : email}).exec(async (err:any, user:any)=>{
+        
+    })
+    console.log("trying to log in");
+});
+
+router.post("/fp", async (req:any, res:any, next:any)=>{
+    const {email} = req.body;
+    console.log(req.body)
+    res.send("hello")
+})
+
+//forgot-username....
+// router.post("/fu", async (req:any, res:any, next:any)=>{
+    
+// })
 
 export {}
 module.exports = router;
