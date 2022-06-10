@@ -1,13 +1,14 @@
 const router = require('express').Router();
-const user = require("../models/user");
+const User = require("../models/user");
 const crypt0 = require('crypto');
 const nodemailer = require('nodemailer');
 const {mailMan} = require('../utils/handler')
 const pwdreset = require('../models/pwdresetwh');
+require('dotenv').config();
 
 //--------------------------------------------------
-const decryptKey4ev = ; //secret key to decode email verification urls
-const decryptKey4pwdrst = ; //secret key to decode password reset urls
+const decryptKey4ev = 'xmSJ@*431$#)Zo3'; //secret key to decode email verification urls
+const decryptKey4pwdrst = 'n@*#sn!)7z3920'; //secret key to decode password reset urls
 //--------------------------------------------------
 
 router.get("/verifyme", (req:any, res:any, next:any)=>{
@@ -19,7 +20,7 @@ router.get("/verifyme", (req:any, res:any, next:any)=>{
 
         //responsing the client with ans from the decrypted url
         const q1 = JSON.parse(MydecodedParams);
-        user.findOneAndUpdate({email: q1.email}, {isEmailVerified: true}).then((resolve:any)=>{
+        User.findOneAndUpdate({email: q1.email}, {isEmailVerified: true}).then((resolve:any)=>{
             if(resolve) return res.render("idle", {username: q1.email})
         })
     }
@@ -31,30 +32,37 @@ router.post("/sendemailforverification", async (req:any, res:any, next:any)=>{
     //poster must have 2 parameters(req.body.email, req.body.user)
     if(req.body.email == undefined || req.body.user == undefined) return res.json({status: 404, message: "invalid email/username for email verification"});
 
-    // 2(email, user) queries will be from user's endpoint
-    const tothe = req.body.email;
-    const user = req.body.user
+    //checking if the user is already verified or not.
+    User.findOne({email: req.body.email}).then(async (resolve:any) =>{
 
-    //cooking the unique url
-    let mykey = crypt0.createCipher('aes-128-cbc', decryptKey4ev);
-    let mystr = mykey.update(`{"user": "${user}", "email":"${tothe}"}`, 'utf8', 'hex')
-    mystr += mykey.final('hex');
+        if(resolve.isEmailVerified) return res.status(200).json({status: 200, message:"email already verified!"});
+        // 2(email, user) queries will be from user's endpoint
+        const tothe = req.body.email;
+        const user = req.body.user
 
-    //sending the email with the unique url
-    await mailMan(tothe, {subject: "Dicot Email Verification", body:`http://localhost:8080/wh/verifyme?end=${mystr}`}).then((resolve:any)=>{
-        return res.status(200).send({resolve});
-    }).catch((err:any)=>{
-        return res.status(500).send(JSON.stringify(err))
+        //cooking the unique url
+        let mykey = crypt0.createCipher('aes-128-cbc', decryptKey4ev);
+        let mystr = mykey.update(`{"user": "${user}", "email":"${tothe}"}`, 'utf8', 'hex')
+        mystr += mykey.final('hex');
+
+        //sending the email with the unique url
+        await mailMan(tothe, {subject: "Dicot Email Verification", body:`http://localhost:8080/wh/verifyme?end=${mystr}`}).then((resolve:any)=>{
+            return res.status(200).send({resolve});
+        }).catch((err:any)=>{
+            return res.status(500).send(JSON.stringify(err))
+        })
+
     })
+    
 
 });
 
 //-> /fp route is to request password reset
 router.post("/fp", async (req:any, res:any, next:any)=>{
     const {email, IP = "0.0.0.0"} = req.body;
-
+    
     //cooking the unique url
-    user.findOne({email: email}).then((resolve:any)=>{
+    User.findOne({email: email}).then((resolve:any)=>{
         if(resolve){
             pwdreset.findOne({email: email}).then(async (Resolve:any)=>{
                 if(Resolve) return res.status(200).send({status: 202, message:"user already resetting his password"});

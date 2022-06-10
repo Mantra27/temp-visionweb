@@ -15,6 +15,7 @@ const PwdresetSchema  = new mongoose.Schema({
         type: String,
         required : true
     }, 
+    
     ip:{
         type: String,
         required : true
@@ -23,6 +24,6 @@ const PwdresetSchema  = new mongoose.Schema({
 });
 
 
-const Pwdreset = mongoose.model('User', PwdresetSchema, "pwdresetwh");
+const Pwdreset = mongoose.model('pwdreset', PwdresetSchema, "pwdresetwh");
 export {}
 module.exports = Pwdreset;

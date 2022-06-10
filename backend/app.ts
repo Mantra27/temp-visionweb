@@ -1,6 +1,5 @@
 'use strict'
-
-require('dotenv').config();
+const path = require('path');
 const express = require('express');
 const mongoose = require('mongoose');
 const app = express();
@@ -9,23 +8,21 @@ const entry = require("./routes/dataEntry");
 const cors = require("cors");
 const wh = require("./routes/serverWh");
 const auth = require("./routes/auth");
-const path = require("path")
 
+require('dotenv').config({path: path.resolve(__dirname+'/.env')});
 //middlewaress
 app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({extended: true}));
 app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, 'views'));
-
 console.log("starting the server...");
 
 //trying to connect to the db
-
-mongoose.connect("", { useNewUrlParser: true, useUnifiedTopology: true})
+mongoose.connect(process.env.DBURL, { useNewUrlParser: true, useUnifiedTopology: true})
     .then((res:any)=>{
 
-        console.log(`------established connection to the server------(${8080})`); 
+        console.log(`------established connection to the server------(${process.env.port || 8080})`); 
 
             app.use('/', index);
             app.use('/auth', auth);
@@ -33,7 +30,7 @@ mongoose.connect("", { useNewUrlParser: true, useUnifiedTopology: true})
             app.use('/wh', wh);
             
         //starting the server
-        app.listen(8080);
+        app.listen(process.env.port || 8080);
 
     })
     .catch((e:any)=>{
