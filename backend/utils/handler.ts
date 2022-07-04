@@ -1,6 +1,5 @@
 const authParams = { senderMail : "mantragohil1@gmail.com", senderPass : "9898517325" }
 const nodemailer = require('nodemailer');
-
 try{
     //-----> mainMan ( target_email_id, {subject: "new", body:"email body"} );
     const mailMan = async (track:any, content:any, options:any = authParams) =>{
@@ -15,16 +14,12 @@ try{
                     pass: options.senderPass,
                 }
             });
-            
             let mailOptions = {
-        
                 from: authParams.senderMail,
                 to: track,
                 subject: content.subject,
                 html: content.body
-        
             };
-
             transporter.sendMail(mailOptions, (error:any, info:any) => {
                 if (error) return reject(error);
                 return resolve({status: 200, message: "email has been sent successfully!"});

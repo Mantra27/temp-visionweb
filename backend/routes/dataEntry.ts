@@ -5,10 +5,12 @@ router.get("/", (req:any, res:any, next:any)=>{
     return res.send("listening to the post requests on this endpoint");
 });
 
+//ultimate endpoint for posting data to the server from visionWeb
 router.post("/", async (req:any, res:any, next:any)=>{
-    
+    if(!req.body.user || !req.body.metadata || !req.body.token) return res.status(404).send({status: 404, message: "parameter(s) from the client side is missing."})
+
     let q1 = req.body.user;
-    let q2 = req.body.metadata; //data would be in string form
+    let q2 = req.body.metadata; //data would be in string form, will have to convert it into json object
     let q3 = req.body.token || undefined;
     
             try{
@@ -23,20 +25,18 @@ router.post("/", async (req:any, res:any, next:any)=>{
 
                     if(!response){
                        await setentry.save().then((results:any)=>{
-            
                             console.log("data saved");
                             return res.send(results);
-            
                         }).catch((err:any)=>{
-        
                             res.json({status: 404, message: JSON.stringify(err.message)});
                             console.log("ERR>>>(./routes/dataEntry.js))", err);
-        
                         })
                     }
-
+                    
                     else{
-                        console.log('user already exists');
+                        console.log('User already exists');
+
+                        //will have to apply a manual json varifier coz we can't verify this part of the code by mongoose
                         entry.findOneAndReplace({user: q1}, {
                             user: q1,
                             LastModified: `${new Date().toDateString()}, ${new Date().toTimeString()}`,
