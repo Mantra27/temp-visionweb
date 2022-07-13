@@ -15,6 +15,7 @@ router.post("/", async (req:any, res:any, next:any)=>{
     
             try{
                 q2 = JSON.parse(q2);
+                
                 let setentry = new entry({
                     user: q1,
                     LastModified: `${new Date().toDateString()}, ${new Date().toTimeString()}`,

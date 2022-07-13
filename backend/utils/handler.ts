@@ -1,4 +1,5 @@
-const authParams = { senderMail : "mantragohil1@gmail.com", senderPass : "9898517325" }
+//this component is gonna be under Kaushikee
+const authParams = { senderMail : "no-reply@dicot.tech", senderPass : "Dicot@2401" }
 const nodemailer = require('nodemailer');
 try{
     //-----> mainMan ( target_email_id, {subject: "new", body:"email body"} );
@@ -6,20 +7,22 @@ try{
         return new Promise((resolve, reject) => {
             let transporter = nodemailer.createTransport({
                 host: 'smtp.gmail.com',
-                port: 587,
-                secure: false,
-                requireTLS: true,
+                port: 465,
+                secure: true,
+                requireTLS: false,
                 auth: {
-                    user: options.senderMail,
-                    pass: options.senderPass,
+                    user: authParams.senderMail,
+                    pass: authParams.senderPass,
                 }
             });
+
             let mailOptions = {
                 from: authParams.senderMail,
                 to: track,
                 subject: content.subject,
                 html: content.body
             };
+            
             transporter.sendMail(mailOptions, (error:any, info:any) => {
                 if (error) return reject(error);
                 return resolve({status: 200, message: "email has been sent successfully!"});

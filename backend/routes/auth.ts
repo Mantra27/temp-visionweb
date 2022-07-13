@@ -33,7 +33,7 @@ passport.serializeUser(function(user:any, done:any) {
 });
 
 passport.deserializeUser(function(user:any, done:any) {
-  done(null, user);
+    done(null, user);
 });
 
 //google oauth functionalities
@@ -72,7 +72,7 @@ router.post("/register", async (req:any, res:any)=>{
     await User.findOne({email : email}).exec(async (err2:any, user:any)=>{
         if(!user){
 
-        	await User.findOne({username : username}).exec(async (err2:any, user2:any)=>{
+        	await User.findOne({username: username}).exec(async (err2:any, user2:any)=>{
 
         		if(!user2){
         			const setNewUser = new User({
