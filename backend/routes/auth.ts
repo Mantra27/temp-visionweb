@@ -8,6 +8,7 @@ const {mailMan} = require("../utils/handler");
 const GoogleStrategy = require("passport-google-oauth20").Strategy;
 const path = require("path");
 const express = require("express");
+const jwtKey = "C<MAn2309*$@#mLSNA093u0";
 
 router.get("/test", async (req:any, res:any, next:any)=>{
     return res.status(200).send({status: 200, message:"/auth endpoint is up and running!"})
@@ -38,10 +39,44 @@ passport.deserializeUser(function(user:any, done:any) {
 
 //google oauth functionalities
 router.get("/google", passport.authenticate("google", {scope: ["profile"]}));
+
 router.get("/google/callback", passport.authenticate("google", {
     successRedirect: "http://localhost:8080/",
     failureRedirect: "/auth/register"
 }));
+
+router.post("/registergoogle", (req:any, res:any)=>{
+    const {username, avatar, contactNumber, country} = req.body;
+    const Ip = "0.0.0.0";
+
+    //also set connection method to google from this endpoint
+    User.find({username: username}).then((resolve:any)=>{
+        if(!resolve){
+            const setNewUser = new User({
+                username: username,
+                email: null,
+                password: null,
+                country: country,
+                contactNumber: contactNumber,
+                isEmailVerified: false,
+                lastKnownLoginMethod: 'GOOGLE',
+                lastLoginTime: {
+                    type: new Date().getTime(),
+                    default: null
+                },
+                lastLoggedInIp: Ip
+        
+            });
+
+            jwt.sign("")
+            setNewUser.save().then((resolvE:any) => {return res.status(200).json({statusCode:200, token:"", message:"user saved successfully from google auth"})});
+
+        }
+        else{
+            //replace user model in db with new details
+        }
+    });
+});
 
 router.post("/login", async (req:any, res:any)=>{
     const {email, password} = req.body;
@@ -52,7 +87,12 @@ router.post("/login", async (req:any, res:any)=>{
             bcrypt.compare(password, user.password, (err:any, isMatch:any)=>{
                 if(err) return res.json({status:404, message: 'cannot match password'});
                 //jwt token will be given here...
-                if(isMatch) return res.json({status: 'ok', message: "login done"});
+
+                if(isMatch){
+                    const Ip = "0.0.0.0";
+                    const token = jwt.sign({ip:Ip, creation: new Date().getTime, expires: null, username: user.username}, jwtKey);
+                    return res.json({token:token, status: 'ok', message: "login done(t0ken also sent)"})
+                }
                 else return res.json({status: 404, message: "wrong password"});
             })
         }
@@ -63,7 +103,17 @@ router.post("/login", async (req:any, res:any)=>{
     })
     console.log("trying to log in");
 });
-
+router.post("/verifyjwt", (req:any, res:any)=>{
+    const {token, Ip} = req.body;
+    jwt.verify(token, jwt.verify, (decoded:any)=>{
+        console.log("cookie is expired, redirecting user to login/register");
+        if((-decoded.creation) + (new Date().getTime()) > decoded.expires) return res.redirect("/");
+        if(Ip == decoded.ip){
+            return res.status(200).json({statusCode:200, message:"jwt verified", token: token, jwtKey});
+        }
+        else return res.redirect("/");
+    })
+})
 router.post("/register", async (req:any, res:any)=>{
 
     if(!req.body.username || !req.body.email || !req.body.password || !req.body.contactNumber || !req.body.country) return res.status(404).send({message: "any of the query is missing from the client's end."});
@@ -103,7 +153,6 @@ router.post("/register", async (req:any, res:any)=>{
     
         }
         else{
-        	console.log("user already exists(same email)");
             return res.status(404).send({message: "user already exists(same email)"})
         }
     });

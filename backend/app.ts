@@ -12,9 +12,6 @@ const wh = require("./routes/serverWh");
 const auth = require("./routes/auth");
 const passport = require("passport");
 const session = require("express-session");
-
-//hello pranshu
-
 require('dotenv').config({path: path.resolve(__dirname+'/.env')});
 
 //general purpose middlewares
@@ -30,12 +27,16 @@ app.use(passport.session());
 //view engine
 app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, 'views'));
-app.use(express.static('/Users/surge/Desktop/code/dicot/v2/frontend/register/build'))
+
+//loading static pages
+app.use(express.static(path.join(__dirname, '../frontend/build')));
 console.log("Starting the server...\n");
 
 mongoose.connect(process.env.DBURL, { useNewUrlParser: true, useUnifiedTopology: true})
     .then((res:any)=>{
+
         console.log(`http://localhost:${process.env.PORT || 8080}`); 
+        
             //all the root backend endpoints
             app.use('/', index);
             app.use('/auth', auth);

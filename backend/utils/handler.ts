@@ -4,17 +4,17 @@ const nodemailer = require('nodemailer');
 try{
     //-----> mainMan ( target_email_id, {subject: "new", body:"email body"} );
     const mailMan = async (track:any, content:any, options:any = authParams) =>{
+        
         return new Promise((resolve, reject) => {
             let transporter = nodemailer.createTransport({
-                host: 'smtp.gmail.com',
-                port: 465,
-                secure: true,
-                requireTLS: false,
+                host: "smtppro.zoho.in",
+                port: 587,
+                secure: false, // true for 465, false for other ports
                 auth: {
-                    user: authParams.senderMail,
-                    pass: authParams.senderPass,
-                }
-            });
+                  user: authParams.senderMail, 
+                  pass: authParams.senderPass
+                },
+              });
 
             let mailOptions = {
                 from: authParams.senderMail,

@@ -74,8 +74,7 @@ router.post("/requestpasswordreset", async (req:any, res:any, next:any)=>{
                         let mystr = mykey.update(`{"email": "${email}", "token":"${resolve.username}", "t":"${CurrentTime}"}`, 'utf8', 'hex')
                         mystr += mykey.final('hex');
 
-                        //  await mailMan(email, {subject: "@Dicot Password Reset", body:`http://localhost:8080/wh/resetpw?end=${mystr}`}).then((RESOLVE:any)=>{
-                            /* remove this line afterwards*/ console.log(`http://localhost:8080/wh/resetpw?end=${mystr}`)
+                        await mailMan(email, {subject: "@Dicot Password Reset", body:`http://localhost:8080/wh/resetpw?end=${mystr}`}).then((RESOLVE:any)=>{
                             const passwordResetRequest = new pwdreset({
                                 email: email,
                                 t: CurrentTime,
@@ -87,7 +86,7 @@ router.post("/requestpasswordreset", async (req:any, res:any, next:any)=>{
                                 console.log("email must be sent");
                                 return res.status(202).send({status: 202, message: {respolve: resolve, message: "email also sent"}})
                             });
-                        //  })
+                        })
                         
                     }
         
