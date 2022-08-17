@@ -1,16 +1,77 @@
 const router = require('express').Router();
-const User = require("../models/user");
-const crypt0 = require('crypto');
 const nodemailer = require('nodemailer');
 const { mailMan } = require('../utils/handler');
+const bcrypt = require('bcrypt');
+const jwt = require('jsonwebtoken');
+const { v4: uuidv4 } = require('uuid');
+const fs = require('fs');
+const path = require('path');
+const fileUpload = require('express-fileupload');
+const User = require("../models/user");
+const Entry = require("../models/entry");
+const crypt0 = require('crypto');
 const pwdreset = require('../models/pwdresetwh');
 const PASSWORD = require('../models/pwdresetwh');
-const bcrypt = require('bcrypt');
+const Logs = require('../models/clientLogs');
 
 //--------------------------------------------------
 const decryptKey4ev = "xmSJ@*431$#)Zo3"; //secret key to decode email verification urls
 const decryptKey4pwdrst = "n@*#sn!)7z3920"; //secret key to decode password reset urls
+const ConnectionT0kenKey = "DSM@)(81;#@$-90"; //secret key for
+const AiUserDataT0ken = "KANKCOQIWU1243GASHVD"; //secret key for storing data for ai model
+const jwtKey = "C<MAn2309*$@#mLSNA093u0"; //secret key for all jwt token validation
 //--------------------------------------------------
+
+router.use(fileUpload());
+
+//endpoint to connect vision-web with vision-c
+router.post("/createconnection", (req:any, res:any) => {
+
+    //get username and email from client's side(cookies, session);
+    const {token} = req.body;
+    // if(!req.user) return res.status(404).json({status: 404, message:"no user logon"});
+    jwt.verify(token, jwtKey, function(err:any, decoded:any) {
+        if(err) return res.status(200).send({status:404, message:"error while decoding your jwt token", err:JSON.stringify(err)});
+        if(decoded){
+            const userConnectionToken = jwt.sign({username:decoded.username, email:decoded.email, time: new Date().getTime()}, ConnectionT0kenKey);
+            User.findOne({username: decoded.username}).then((response:any)=>{
+                response.connectionToken = userConnectionToken;
+            });
+        }
+    });
+
+});
+
+//api/stat (for machine learning [big-brain]) 
+router.post("/stat", async (req:any, res:any)=>{
+    const {body, token = null} = req;
+    //kaushikee's logger will be added here
+    // if(!token || token != AiUserDataT0ken) return res.status(404).json({status: 404, message:"invalid token from admin"});
+    const filename = uuidv4(); // '110ec58a-a0f2-4ac4-8393-c866d813b8d1'
+    await fs.writeFileSync(`/Users/surge/Desktop/code/dicot/v2/backend/serverBasedAi/${filename}.json`, JSON.stringify(body.body));
+    return res.status(200).json({status: 200, message:`file created successfully with the name ${filename}`});
+});
+
+//this endpoint was to provide token from google auth for logging in from diffrent port(8080 and 3000)
+router.get("/setToken", (req:any, res:any) => {
+    if(req.user) return res.status(200).json({statusCode:'ok', token:JSON.stringify(req.user)});
+    else return res.status(404).send({status: 404, message:"no user logon!"})
+});
+
+router.post("/get-user-info", (req:any, res:any) => {
+    const {token} = req.body;
+    if(!token) return res.status(200).send({status:404, message:'invalid /get-user-info token from the client'});
+
+    jwt.verify(token, jwtKey, function(err:any, decoded:any) {
+        if(err) return res.status(200).send({status:404, message:"error while decoding your jwt token", err:JSON.stringify(err)});
+        if(decoded){
+            User.findOne({username: decoded.username}).then((data:any) => {
+                return res.status(200).send({status:200, message: "data received", data:data});
+            })
+        }
+    });   
+
+});
 
 router.get("/verifyme", (req:any, res:any, next:any)=>{
     try{
@@ -50,7 +111,7 @@ router.post("/requestemailforverification", async (req:any, res:any, next:any)=>
                 return res.status(200).send({resolve});
             }).catch((err:any)=>{
                 return res.status(500).send(JSON.stringify(err))
-            })
+            });
         })
     }
     catch(error){
@@ -97,6 +158,7 @@ router.post("/requestpasswordreset", async (req:any, res:any, next:any)=>{
             }
             else return res.status(404).send({status: 404, message: `user not even registered (${email})`});
         }).catch((errr:any)=>{
+
             //this catch means theres no user attached with certain email, hence he/she can't reset the password
             console.log(errr)
             return res.status(404).send({status: 404, message: "error while checking if the user is connected with the email or not(pwd reset)"})
@@ -109,8 +171,6 @@ router.post("/requestpasswordreset", async (req:any, res:any, next:any)=>{
     }
 
 })
-
-router 
 
 //remember this is a get request
 router.get("/resetpw", (req:any, res:any, next:any)=>{
@@ -145,14 +205,13 @@ router.post("/changepassword", async (req:any, res:any, next:any)=>{
     if(!req.body.currentPassword || !req.body.newPassword || !req.body.confirmNewPassword || !req.body.email) return res.status(404).send({status:404, message:"missing param(s) from the client side"});
         const {currentPassword, newPassword, confirmNewPassword, email} = req.body;
             try{
-                //seachig if user exists or not
+                //seachingif user exists or not
                 User.findOne({email: email}).then((zol:any) => {
-
                     //confirm if user exists w/ basic if & else conditions
                     if(!zol) return res.status(404).send({status:404, message:"no user found with the specified email"});
                         if(newPassword != confirmNewPassword) return res.status(404).send({status:404, message:"confirm password is incorrect"});
                             bcrypt.compare(currentPassword, zol.password, (err:any, isMatch:any)=>{
-                                if(err) return res.json({status:404, message: 'cannot match password'});
+                                if(err) return res.json({status:404, message: 'cannot match current password'});
                                 
                                 //if hashed password in db and currentpassword matches
                                 if(isMatch){
@@ -181,6 +240,7 @@ router.post("/changepassword", async (req:any, res:any, next:any)=>{
                 })
             }
             catch(error){
+                //!logger here
                 console.log("!serverWh-line 172!", error)
                 return res.status(404).send({status: 404, message:'Internal server error /changepassword'})
             }
@@ -232,10 +292,186 @@ router.post("/resetpw", require("../service/passwordresetTimeout"), async (req:a
         })
    }
    catch(error){
+    
         console.log("!serverWh-line 199!", error)
         return res.status(404).send({status: 404, message:'Internal server error /resetpw(post)'})
    }
 
+});
+
+router.post("/addrole", (req:any, res:any)=>{
+    //confirm password before this role addition
+    const{sendermail, email, role} = req.body;
+    try{
+        User.findone({email: sendermail}).then((checkSendersRole:any)=>{
+            //cheking if the sender is atleast admin/owner
+            if(checkSendersRole.role != "admin" || checkSendersRole.role != "owner") return res.status(200).send({status:404, message:"you can not assign a role to a user, you're not eligible"});
+
+            User.findOne({ email: email }).then((result:any)=>{
+                if(!result) return res.status(200).send({status: 404, message:`this user ${email}, will have to register first before giving them a role!`});
+                const possibleRoles = ['owner', 'admin', 'manager', 'worker'];
+                //could be useless
+                const roleExists = possibleRoles.map((E:any)=>{
+                    if(role == E){return true;}
+                    return false;
+                });
+                if(!roleExists) return res.status(200).send({status: 404, message:"client selected invalid role"});
+                //after setting the role, we'll also give him access to projects
+                result.role = role;
+                Entry.findOne({email:email}).then((entryResult:any) => {
+                    if(!entryResult) return res.status(200).send({status: 404, message:"an error occurred while getting client's current project while giving him a role"})
+                    Entry.findone({email:sendermail}).then((entryResultFromAdmin:any) => {
+                        if(!entryResultFromAdmin) return res.status(200).send({status:404, message:"an error occurred while setting client's project from owner"})
+                        entryResult = entryResultFromAdmin;
+                    })
+                });
+                return res.status(200).send({status: 200, message:"role has been added successfully"})
+            });
+        })
+    }
+    catch(ERRR){
+        return res.status(200).send({status:404, message:"server error while adding role", error: JSON.stringify(ERRR)})
+    }
+});
+
+//when a user adds a new project to the dashboard
+router.post("/addproject",(req:any, res:any) => {
+    console.log('add project called');
+
+    const {token, projects} = req.body;
+
+    //side case handeling
+    if(!token) return res.status(200).send({status:404, message:'invalid /addproject token from the client'});
+    if(!projects) return res.status(200).send({status:404, message:'invalid project property called from the client'});
+
+    //verifying to user's jwt token before he/she can access someone's projects and stuff
+    jwt.verify(token, jwtKey, function(err:any, decoded:any) {
+
+        if(err) return res.status(200).send({status:404, message:"error while decoding your jwt token", err:JSON.stringify(err)});
+        if(decoded){
+            Entry.findOne({username: decoded.username}).then((Z:any) => {
+                if(!Z){
+                    //user never created a project before, its his/her first
+                    User.findOne({username: decoded.username}).then((draftusername:any) => {
+                        let email = draftusername.email ?? 'notfound';
+                        const draftEntry = Entry({
+                            user: email,
+                            username: decoded.username,
+                            LastModified: new Date().getTime(),
+                            metadata:[
+                                {
+                                    Project: projects[0].projectName,
+                                    Project_id: uuidv4(),
+                                    Description: projects[0].desc,
+                                    Location: projects[0].location,
+                                    Misc:{}
+                                }
+                            ]
+                        }).save();
+                        return res.status(200).send({status:200, message:"new project created successfully"})
+                    });
+                }
+
+                else{
+                    Entry.updateOne({username: decoded.username}, {$push: {"metadata":
+                            {
+                                Project: projects[0].projectName,
+                                Project_id: uuidv4(),
+                                Description: projects[0].desc,
+                                Location: projects[0].location,
+                                Misc:{}
+                            }
+                        }
+                    })
+                    .then((results:any)=>{
+                        if(!results.acknowledged) return res.status(200).send({status:404, message:"coulnd add new project"});
+                        console.log('new project send from server')
+                        return res.status(200).send({status:200, message:"new project created successfully"})
+                    })
+                }
+
+            });
+        }
+    });
+});
+
+router.post("/getprojects", (req:any, res:any)=>{
+    const {token} = req.body;
+    if(!token) return res.status(200).send({status:404, message:'invalid /addproject token from the client'});
+    jwt.verify(token, jwtKey, function(err:any, decoded:any) {
+
+        if(err) return res.status(200).send({status:404, message:"error while decoding your jwt token", err:JSON.stringify(err)});
+        if(decoded){
+            Entry.findOne({username: decoded.username}).then((z:any) => {
+                if(!z) return res.status(200).send({status:200, message:"user_has_no_projects"});
+                else{
+                    return res.status(200).send({status:200, message:z});
+                }
+            });
+        }
+    });    
+});
+
+router.post("/logs", (req:any, res:any) => {
+    const {username, email, role, project, details, ip} = req.body;
+    const Time = new Date().getTime();
+
+    const DraftLog = new Logs({
+        username: username,
+        email: email,
+        role: role,
+        logs: details,
+        lastknownip: ip,
+        time: Time,
+    });
+
+    DraftLog.save().then((saving:any) => {
+        return res.status(200).send({status:200, message:"log saved successfully"})
+    })
+    
+});
+
+router.post("/feedback", async (req:any, res:any)=>{
+
+    console.log(req.files)
+    if(!req.files) return res.send(`no files received from the user!`)
+
+    console.time("uploaded");
+    let sampleFile:any;
+    sampleFile = await req.files.foo;
+    console.log(sampleFile);
+    await fs.writeFileSync(`../temp/${sampleFile.name}`, sampleFile.data);
+    console.timeEnd('uploaded');
+
+    //--> dear developer, this all mess was created to download file from user from react(axios) and upload it to server and send it back to the admins(via mails)
+
+    // let {name, email, subject, contact, feedback, attachedFile = null} = req.body;
+    // if(name.trim() == '' || email.trim() == '' || subject.trim() == '' || contact.trim() == ''  || feedback.trim() == '' ) return res.status(200).send({status: 404, message:"something is missing from input fields"});
+    // let filename = uuidv4(); 
+
+    // console.log(req.files)
+    // if(req.files){
+    //     console.log("tehres a file!!")
+    //     let sampleFile:any;
+    //     sampleFile = await req.files.proof;
+    //     console.log(sampleFile);
+    //     await fs.writeFileSync(`../temp/${filename}_${sampleFile.name}`, sampleFile.data);
+    //     filename = `${filename}_${sampleFile.name}`;
+    //     attachedFile = 1;
+    // }
+    // if(attachedFile != 1){
+    //     filename = null;
+    // };
+
+    // //send mail to dicot admins(feedback)
+    // const adminMails = ["gohilmantra@gmail.com", "mantra@dicot.tech"];
+    // await adminMails.map(async (admins:any)=>{
+    //     await mailMan(admins, {subject:`Recieved new feeback!`, body:`name: ${name}\n from: ${email} \n subject: ${subject} \n ${contact} \n attachments:${attachedFile} \n Feedback:${feedback}`, attachments:{filename:filename, content: fs.createReadStream(path.join(__dirname,`/${filename}`))}});
+    //     console.log(`feedback sent to ${admins} successfully`)
+    // });
+
+    return res.status(200).send({status: 200, message:"notified admins!"});
+    
 })
 
 export {}

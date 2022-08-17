@@ -1,0 +1,92 @@
+.App {
+    /* display: flex;
+    justify-content: center; */
+    position: absolute;
+    top: 5vh;
+}
+
+#nothead {
+    position: absolute;
+    /* justify-content: center; */
+    width: 30vw;
+    height: auto;
+    left: 36.143vw;
+    top: auto;
+    bottom: -8vh;
+    font-family: 'Roboto';
+    font-style: normal;
+    font-weight: 700;
+    line-height: 5vh;
+}
+
+.setting {
+    position: absolute;
+    width: 5.429vw;
+    height: 5.571vw;
+    right: -97vw;
+    /* left: 89.714vw; */
+    /* top: 1.429vh; */
+    top: auto;
+    bottom: -11vh;
+}
+
+#appbox {
+    position: absolute;
+    left: 2.714vw;
+    /* top: 13.810vh; */
+
+    background: #1D3557;
+    border-radius: 25px;
+}
+
+.notification {
+    width: 87vw;
+    height: 9.048vh;
+    background: #A8DADC;
+    border-radius: 35px;
+}
+
+.nottext {
+    position: absolute;
+    width: 28vw;
+    height: 4.524vh;
+    left: 2vw;
+    /* top: 96px; */
+
+    font-family: 'Roboto';
+    font-style: normal;
+    font-weight: 400;
+    line-height: 4.524vh;
+}
+
+.nottime {
+    position: absolute;
+    width: 3.143vw;
+    height: 4.524vh;
+    left: 74.429vw;
+    /* top: 96px; */
+
+    font-family: 'Roboto';
+    font-style: normal;
+    font-weight: 400;
+    font-size: 2.286vw;
+    line-height: 4.524vh;
+}
+
+.dots {
+    position: absolute;
+    width: 2.857vw;
+    height: 4.762vh;
+    left: 78.857vw;
+    top: 2.381vh;
+}
+
+#line {
+    position: absolute;
+    width: 95.143vw;
+    height: 0vh;
+    left: 0vw;
+    top: 12.143vh;
+
+    border: 1px solid #000000;
+}

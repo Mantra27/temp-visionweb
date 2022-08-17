@@ -4,7 +4,7 @@ const entry = require("../models/entry");
 router.get("/", (req:any, res:any, next:any)=>{
     return res.send("listening to the post requests on this endpoint");
 });
-
+router.post
 //ultimate endpoint for posting data to the server from visionWeb
 router.post("/", async (req:any, res:any, next:any)=>{
     if(!req.body.user || !req.body.metadata || !req.body.token) return res.status(404).send({status: 404, message: "parameter(s) from the client side is missing."})
@@ -15,7 +15,6 @@ router.post("/", async (req:any, res:any, next:any)=>{
     
             try{
                 q2 = JSON.parse(q2);
-                
                 let setentry = new entry({
                     user: q1,
                     LastModified: `${new Date().toDateString()}, ${new Date().toTimeString()}`,
@@ -46,6 +45,7 @@ router.post("/", async (req:any, res:any, next:any)=>{
                             .then((innerResolve:any)=>{
                             console.log(innerResolve);
                         });
+                        
                         return res.json({status: 404, message: "user overwritten"})
                     }
 

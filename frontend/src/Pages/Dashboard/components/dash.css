@@ -1,0 +1,190 @@
+* {
+    margin: 0;
+    padding: 0;
+}
+
+:root {
+    --primary-color: #1D3557;
+    --background-color: #F1FAEE;
+    --light-blue: #A8DADC;
+}
+
+#root {
+    background-color: var(--background-color);
+}
+
+/* Navbar */
+#navbar {
+    display: flex;
+    width: 100vw;
+    height: 10vh;
+    position: fixed;
+    z-index: 10;
+    background-color: var(--light-blue);
+}
+
+.nav-back {
+    height: 10vh;
+}
+
+.icon-dash {
+    height: inherit;
+    width: auto;
+    transform: scale(0.6);
+}
+
+.logo-dash {
+    transform: translateY(-6%) translateX(10%);
+    z-index: -1;
+}
+
+/* Drawer */
+
+.top-bar {
+    display: flex;
+    padding: 5% 5%;
+}
+
+.drawer-back-icon {
+    margin-right: auto;
+    transform: scale(2);
+    cursor: pointer;
+    border-radius: 50%;
+    transition: 0.5s;
+}
+
+.drawer-icon {
+    margin: 0 2%;
+    cursor: pointer;
+}
+
+.drawer-header {
+    color: var(--light-blue);
+    margin: 0 !important;
+    padding: 0 !important;
+    background-color: var(--primary-color);
+}
+
+.hello-user {
+    width: inherit;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.hello-user img {
+    border-radius: 50%;
+    width: 50%;
+}
+
+.drawer-body {
+    background-color: var(--light-blue);
+    padding-top: 6vh !important;
+}
+
+.drawer-nav-item {
+    display: flex;
+    cursor: pointer;
+}
+
+.drawer-nav-item:hover {
+    background-color: #d0f0f1;
+}
+
+.drawer-nav-item-icon {
+    width: 20%;
+    border-right: 1px solid black;
+}
+
+.drawer-nav-item-text {
+    width: 80%;
+    font-weight: 600;
+    text-align: center;
+}
+
+.drawer-nav-item-icon,
+.drawer-nav-item-text {
+    padding: 2vh 1vw;
+}
+
+/* Projects */
+
+
+.project {
+    width: min(400px, 96vw);
+    margin: 5vh 2vw;
+    display: inline-block;
+    background-color: var(--light-blue);
+    border-radius: 2vh;
+    position: relative;
+    z-index: 1;
+}
+
+.project-details {
+    padding: 7vh 2vw;
+}
+
+.project button {
+    background-color: var(--primary-color);
+    color: var(--background-color);
+    font-size: 1.2em;
+    cursor: pointer;
+    padding: 1vh 0;
+    width: inherit;
+    max-width: 400px;
+    border-bottom-right-radius: 2vh;
+    border-bottom-left-radius: 2vh;
+}
+
+.add-project {
+    z-index: 2;
+    position: fixed;
+    bottom: 2vh;
+    right: 2vh;
+    background-color: #C2202C;
+    color: white;
+    padding: 2vh;
+    border-radius: 50%;
+    cursor: pointer;
+}
+
+.add-project svg {
+    transform: scale(2);
+    transition: 0.5s;
+}
+
+.add-project svg:hover {
+    transform: scale(2.5);
+}
+
+/* Background */
+
+.bg {
+    position: fixed;
+    top: 55vh;
+    left: 50vw;
+    transform: translate(-50%, -50%);
+    width: min(300px, 80vw);
+    height: min(500px, 133vw);
+}
+
+.bg-left {
+    background-color: #9CA1E0;
+    position: absolute;
+    z-index: -1;
+    left: -20%;
+    width: 80%;
+    height: 100%;
+    border-radius: 0 300px 300px 0;
+}
+
+.bg-right {
+    background-color: #797D77;
+    position: absolute;
+    z-index: -2;
+    right: -20%;
+    width: 80%;
+    height: 100%;
+    border-radius: 300px 0 0 300px;
+}

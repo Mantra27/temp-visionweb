@@ -3,7 +3,6 @@ const decryptKey4pwdrst = "n@*#sn!)7z3920"; //secret key to decode password rese
 const crypt0 = require('crypto');
 
 const isPasswordResetURLAlive = (req:any, res:any, next:any)=> {
-
     try{
         if(!req.body.password || !req.body.confirmPassword || !req.body.portalToken) return res.status(404).send({status:404, message:"missing param(s) from the client side"});
         const {password, confirmPassword, portalToken} = req.body;

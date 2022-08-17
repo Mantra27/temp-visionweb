@@ -5,26 +5,30 @@ const metadataschema = mongoose.Schema({
 
         Project: {
             type: String,
-            required: true
+        },
+
+        Location: {
+            type: String,
+        },
+        
+        Description: {
+            type: String,
         },
 
         Project_id: {
             type: String,
-            required: true
         },
 
         Misc: {
 
             Timed:{
                 type: String,
-                required: true,
             },
 
             Devices: [{
                 Header: String,
                 val: {
                     type: String,
-                    required: true
                 }
             }]
 
@@ -39,7 +43,12 @@ const entryschema = new Schema({
         type: String,
         required: true
     },
-    
+
+    username:{
+        type: String,
+        required:true
+    },
+
     LastModified: {
         type: String,
         required: true

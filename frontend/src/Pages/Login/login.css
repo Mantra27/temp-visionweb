@@ -1,0 +1,146 @@
+#login {
+    display: flex; 
+    justify-content: center;
+}
+
+/* background */
+.background {
+    position: absolute;
+    display: flex;
+    justify-content: center;
+    height: 90vh;
+    width: 90vw;
+}
+
+.lightblue {
+    background-color: #A8DADC;
+    border-radius: 5vh;
+    margin: auto;
+    left: 0;
+    position: absolute;
+    width: 95%;
+    height: 95%;
+}
+
+.darkblue {
+    width: 0;
+    height: 0;
+    border-bottom: 90vh solid #1D3557;
+    border-left: 90vw solid transparent;
+    position: absolute;
+}
+
+
+/* login content */
+
+.loginform {
+    display: grid;
+    z-index: 0;
+    grid-template-columns: 4fr 8fr;
+    width: 90%;
+    height: 90%;
+}
+
+
+.logo-login {
+    height: inherit;
+    width: auto;
+    grid-column: 1/2;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.logo-login img {
+    width: 75%;
+    max-width: 20vw;
+}
+
+.logo-login p {
+    font-weight: 600;
+    font-size: 1.2em;
+}
+
+
+
+.form {
+    grid-column: 2/3;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 0.5% 3%;
+}
+
+.form .formControl {
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    flex-direction: column;
+    box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25), 0px 4px 4px rgba(0, 0, 0, 0.25);
+    border-radius: 7vh;
+}
+
+.form form {
+    display: flex;
+    height: 98%;
+    width: 86%;
+    justify-content: space-around;
+    align-items: center;
+    flex-direction: column;
+}
+
+.google-oauth a {
+    padding: 1vh 1vw;
+    border: 1px solid rgba(0, 0, 0, 0.344);
+    display: flex;
+    font-weight: 600;
+    box-shadow: 1px 2px 2px rgba(0, 0, 0, 0.25), 1px 2px 2px rgba(0, 0, 0, 0.25);
+    border-radius: 5%;
+    align-items: center;
+}
+
+.google-oauth a:hover {
+    box-shadow: 2px 3px 3px rgba(0, 0, 0, 0.25), 2px 3px 3px rgba(0, 0, 0, 0.25);
+}
+
+.google-oauth img {
+    height: 1em;
+    width: auto;
+    margin-right: 0.5em;
+}
+
+
+.form form h1 {
+    font-weight: bold;
+    font-size: 2em;
+}
+
+#loginbtn {
+    border: none;
+    background-color: black;
+    color: white;
+    border: 2px solid black;
+    padding: 0.5% 3%;
+    width: fit-content;
+    cursor: pointer;
+    border-radius: 30px;
+}
+
+.btn {
+    background-color: black;
+    display: flex;
+    align-items: center;
+    border: 2px solid black;
+    color: white;
+    padding: 0.5% 3%;
+    width: fit-content;
+    border-radius: 30px;
+}
+
+.btn:hover,
+#loginbtn:hover {
+    background-color: white;
+    color: black;
+    font-weight: bold;
+}

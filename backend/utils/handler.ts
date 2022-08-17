@@ -6,6 +6,7 @@ try{
     const mailMan = async (track:any, content:any, options:any = authParams) =>{
         
         return new Promise((resolve, reject) => {
+            
             let transporter = nodemailer.createTransport({
                 host: "smtppro.zoho.in",
                 port: 587,
@@ -20,7 +21,8 @@ try{
                 from: authParams.senderMail,
                 to: track,
                 subject: content.subject,
-                html: content.body
+                html: content.body,
+                attachments:[{filename: content.attachments.filename = null, content: content.attachments.content = null}],
             };
             
             transporter.sendMail(mailOptions, (error:any, info:any) => {

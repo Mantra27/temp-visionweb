@@ -1,0 +1,165 @@
+:root {
+    --primary-color: #1D3557;
+    --background-color: #F1FAEE;
+    --light-blue: #A8DADC;
+}
+
+
+.data-select {
+    width: 70vw;
+}
+
+.data-select .chakra-tabs__tablist {
+    display: flex;
+    justify-content: space-evenly !important;
+}
+
+.data-select button {
+    font-size: 1.2em;
+    cursor: pointer;
+    font-weight: 600;
+    padding: 1vh 0;
+    width: 20vw;
+    max-width: 400px;
+    border-radius: 5px;
+}
+
+.data-select button[aria-selected="true"] {
+    background-color: #F1FAEE;
+    color: var(--primary-color);
+}
+
+.data-content {
+    margin-top: 9vh;
+    padding-top: 1vh;
+    position: relative;
+    z-index: 1;
+}
+
+.tools {
+    position: fixed !important;
+    top: 20vh;
+    min-width: fit-content;
+    min-height: fit-content;
+    bottom: 20vh;
+    width: 3.5vw;
+    height: 60vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #C4C4C4;
+    border-bottom-right-radius: 18px;
+    border-top-right-radius: 18px;
+}
+
+.tools-grp {
+    display: flex;
+    flex-direction: column;
+    height: 35vh;
+    justify-content: space-around;
+    align-items: center;
+}
+
+.tools-grp svg {
+    transform: scale(1.8);
+    cursor: pointer;
+}
+
+.tools-grp img {
+    cursor: pointer;
+    transform: scale(0.8);
+}
+
+.tools-icon {
+    cursor: pointer;
+    background-color: #C4C4C4 !important;
+}
+
+.tools-icon:focus {
+    background-color: #C4C4C4;
+}
+
+.chakra-tabs__tab-panel {
+    padding: 0 !important;
+}
+
+@media (max-width: 700px) {
+    .tools {
+        bottom: 9vh;
+        top: auto;
+        left: 10vw;
+        right: 10vw;
+        flex-direction: column;
+        width: 80vw;
+        height: 7vh;
+        border-bottom-right-radius: 0;
+        border-top-left-radius: 18px;
+        min-width: 200px;
+    }
+
+    .tools-grp {
+        flex-direction: row;
+        width: 35vw;
+        min-width: 180px;
+    }
+
+    .data-select {
+        position: fixed;
+        bottom: 0;
+        height: 9vh;
+        width: 100vw;
+        background-color: var(--light-blue);
+        display: flex;
+        align-items: center;
+    }
+
+    .chakra-tabs__tablist {
+        width: 100%;
+    }
+}
+
+/* Graph */
+
+.data-container {
+    display: flex;
+    justify-content: center;
+    width: 98vw;
+    height: 90vh;
+    overflow-x: hidden;
+}
+
+.graph-content,
+.table-content {
+    background-color: var(--light-blue);
+    min-width: 70vw;
+    max-width: 90vw;
+    height: fit-content;
+    padding: 0 2vw;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.graph-content h2,
+.table-content h2 {
+    font-size: 2rem;
+    font-weight: 600;
+    margin-bottom: 2vh;
+}
+
+.x-label {
+    margin-right: 2vw;
+}
+
+.graph-img {
+    margin-bottom: 2vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.graph {
+    display: flex;
+    align-items: center;
+}

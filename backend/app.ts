@@ -8,44 +8,42 @@ const app = express();
 const index = require("./routes/index");
 const entry = require("./routes/dataEntry");
 const cors = require("cors");
-const wh = require("./routes/serverWh");
+const api = require("./routes/api");
 const auth = require("./routes/auth");
 const passport = require("passport");
 const session = require("express-session");
-require('dotenv').config({path: path.resolve(__dirname+'/.env')});
+const { execSync } = require("child_process"); 
+const fileUpload = require('express-fileupload');
 
-//general purpose middlewares
+require('dotenv').config({path: path.resolve(__dirname + '/.env')});
+
+//middlwares/cors
 app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({extended: true}));
-
-//auth and 0auth middlewares
+app.use(fileUpload());
 app.use(session({ secret: process.env.sessionSecret, saveUninitialized: true, resave: true}));
 app.use(passport.initialize());
 app.use(passport.session());
-
-//view engine
 app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, 'views'));
 
 //loading static pages
-app.use(express.static(path.join(__dirname, '../frontend/build')));
-console.log("Starting the server...\n");
-
+console.log("Starting the server...")
 mongoose.connect(process.env.DBURL, { useNewUrlParser: true, useUnifiedTopology: true})
-    .then((res:any)=>{
-
+    .then((res:any)=>{  
         console.log(`http://localhost:${process.env.PORT || 8080}`); 
-        
+
             //all the root backend endpoints
             app.use('/', index);
             app.use('/auth', auth);
-            app.use('/db', entry);
-            app.use('/wh', wh);
+            app.use('/db', entry);  
+            app.use('/api', api);
 
-        //starting the server
+        //starting the server (backend[8080] -- frontend[3000])
         app.listen(process.env.port || 8080);
+        // const result = execSync(`cd ${__dirname}/../frontend && npm start`);
 
     }).catch((LaunchingError:any)=>{
         console.log("unable to establish connection to the server", LaunchingError);
-    });
+});

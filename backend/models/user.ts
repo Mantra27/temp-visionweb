@@ -11,6 +11,11 @@ const UserSchema  = new mongoose.Schema({
         required : true
     },
 
+    role:{
+        type: String,
+        required : true
+    },
+
     password :{
         type  : String,
         required : true
@@ -37,6 +42,12 @@ const UserSchema  = new mongoose.Schema({
         required: true
     },
 
+    connectionToken:{
+        type:String,
+        default: null,
+        required: true
+    },
+    
     avatar: {
         type: String,
         default: null
