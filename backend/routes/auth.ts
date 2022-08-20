@@ -10,10 +10,11 @@ const LocalStrategy = require("passport-local").Strategy;
 const path = require("path");
 const express = require("express");
 const { v4: uuidv4 } = require('uuid');
+require('dotenv').config({path: path.resolve(__dirname + '/../.env')});
 
 //-–––––––––––––––––––––––––––––––––––––––––––––
-const jwtKey = "C<MAn2309*$@#mLSNA093u0";
-const ConnectionT0kenKey = "DSM@)(81;#@$-90"; //secret key for
+const jwtKey = process.env.jwtkey
+const ConnectionT0kenKey = process.env.ConnectionT0kenKey;
 //-–––––––––––––––––––––––––––––––––––––––––––––
 
 router.get("/test", async (req:any, res:any, next:any)=>{
@@ -129,7 +130,7 @@ async function Login(email:any, password:any, res:any){
 //tradition login method
 router.post("/login", async (req:any, res:any, next:any) => {
     try{
-        await Login(req?.body?.username, req.body?.password, res);
+        await Login(req?.body?.email, req.body?.password, res);
     }
     catch(LoginError){
         console.log(LoginError);
@@ -160,7 +161,7 @@ router.post("/verifyjwt", (req:any, res:any)=>{
 });
 
 router.post("/register", async (req:any, res:any)=>{
-    if(!req.body.username || !req.body.email || !req.body.password || !req.body.contactNumber || !req.body.country) return res.status(404).send({message: "any of the query is missing from the client's end."});
+    if(!req.body.username || !req.body.email || !req.body.password || !req.body.contactNumber || !req.body.country) return res.status(200).send({status: 404, message: "One of your input field(s) is missing from your side"});
     const {username, email, password, country, contactNumber, role = "admin"} = req.body;
 
     await User.findOne({email : email}).exec(async (err2:any, user:any)=>{
@@ -184,11 +185,11 @@ router.post("/register", async (req:any, res:any)=>{
                     });
                         bcrypt.genSalt(10, async (err:any, salt:any)=> 
                                 bcrypt.hash(setNewUser.password,salt, (err:any, hash:any)=> {
-                                    if(err) return res.status(404).send({status: 202, message:"error generating hash from the server, mail us on nandan@dicot.in"});
+                                    if(err) return res.status(200).send({status: 404, message:"error generating hash from the server, mail us on nandan@dicot.in"});
                                         setNewUser.password = hash;
                                         setNewUser.save()
                                     .then((value:any)=>{
-                                        console.log('a user succesfully registered', setNewUser);
+                                        console.log('a user succesfully registered', setNewUser.email);
                                         //do login him
                                         
                                         return Login(email, password, res);
@@ -197,14 +198,13 @@ router.post("/register", async (req:any, res:any)=>{
                         }));
         		}
         		else{
-        			console.log("user already exists(same username)");
-                    return res.status(404).send({message: "user already exists(same username)"})
+                    return res.status(200).send({status:404, message: "Sorry but that username is already in use"})
         		}
     		});
     
         }
         else{
-            return res.status(404).send({message: "user already exists(same email)"})
+            return res.status(200).send({status:404, message: "Sorry but that email is already in use"})
         }
     });
 });

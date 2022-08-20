@@ -39,7 +39,19 @@ const InputForm = () => {
         const Data = await
         axios.post(url, data);
         console.log(Data.data);
-        if(!Data.data.token){
+
+        if(Data.data.status == 404){
+          toast({
+            title: "Oops 🤖",
+            description: Data.data.message,
+            status: "error",
+            position: "top-right",
+            duration: 5000,
+            isClosable: true,
+          });
+        }
+
+        else if(!Data.data.token){
           toast({
             title: "Something bad happened!",
             description: "Incorrect email or password",

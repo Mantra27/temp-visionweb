@@ -18,6 +18,7 @@ const fileUpload = require('express-fileupload');
 require('dotenv').config({path: path.resolve(__dirname + '/.env')});
 
 //middlwares/cors
+// app.use(express.static("/Users/surge/Desktop/code/dicot/v2/frontend/build"))
 app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({extended: true}));

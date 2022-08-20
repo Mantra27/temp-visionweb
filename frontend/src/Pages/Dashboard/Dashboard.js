@@ -1,6 +1,6 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
-import axios from "axios";
+
 import Bg from "./components/Bg";
 import "./components/dash.css";
 import Navbar from "./components/Navbar";
@@ -21,10 +21,14 @@ function App(props) {
 // googlesignincheck();
 
   React.useLayoutEffect(() => {
+    console.log("dashie dashie")
     document.title = "Dashboard";
     if (localStorage.getItem("token") == null) {
+      setTimeout(() => {
+      console.log("dashie dashie null")
       //condition if not logged in
       navigate("/auth/login");
+      }, 50);
     } // eslint-disable-next-line
   }, []);
 

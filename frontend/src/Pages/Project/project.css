@@ -130,6 +130,7 @@
 
 .graph-content,
 .table-content {
+    margin: auto;
     background-color: var(--light-blue);
     min-width: 70vw;
     max-width: 90vw;

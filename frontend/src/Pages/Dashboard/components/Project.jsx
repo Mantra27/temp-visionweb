@@ -1,9 +1,13 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
+import { useFormControlStyles, useToast } from "@chakra-ui/react";
+
 
 function Project(props) {
+  console.log("ifjsdi")
+  const toast = useToast();
   const navigate = useNavigate();
-
+  
   return (
     <div className="project">
       <div className="project-details">
@@ -26,10 +30,32 @@ function Project(props) {
           <strong>Description:</strong> {props.desc}
         </p>
       </div>
-      <button
+      <button 
+      data-uniqueprojectid={props.uniqueProjectId}
         onClick={(e) => {
-          e.preventDefault();
-          navigate("/project");
+
+          if(!e.target.dataset.uniqueprojectid){
+            e.preventDefault()
+            navigate("/project")
+            setTimeout(() => {
+              navigate(`/`);
+            }, 1000);
+
+            toast({
+              title: "Something Went wrong,",
+              description: "tried to access non existing(server) project component", 
+              status: "error",
+              position: "top-right",
+              duration: 7000,
+              isClosable: true,
+            });
+
+          }
+          else{
+            console.log("HELLO DA")
+            e.preventDefault();
+            navigate(`/project?graphId=${e.target.dataset.uniqueprojectid}`);
+          }
         }}
       >
         View

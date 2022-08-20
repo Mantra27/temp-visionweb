@@ -68,7 +68,6 @@ function Login() {
     try {
       const url = "http://localhost:8080/auth/login";
       const Data = await axios.post(url, data);
-      console.log(Data.data);
       if(!Data.data.token){
         toast({
           title: "Incorrect details",

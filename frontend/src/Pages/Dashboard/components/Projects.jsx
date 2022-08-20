@@ -11,17 +11,17 @@ function Projects() {
     useEffect(() =>{
       axios.post("http://localhost:8080/api/getprojects", {token: localStorage.getItem("token")}).then(async (results)=>{
       const draft = [];
+      
       await results.data.message.metadata.map(async (value, key)=>{
         draft[key] = {
             projectName: value.Project,
+            uniqueProjectId: value.Project_id,
             projectOnlineStatus: false,
             location: value.Location,
             desc: value.Description,
         }
-        console.log('drafter called')
       });
 
-      console.log(draft);
         setProjectList(draft);
     });
     }, [])
@@ -40,6 +40,7 @@ function Projects() {
       desc: passedData.pdescription
 
     }]}).then(async (results)=>{
+
       if(results.data.status == 200){
 
         toast({
@@ -50,7 +51,7 @@ function Projects() {
           duration: 5000,
           isClosable: true,
         });
-        console.log("uppper setprojectlist");
+        
         await setProjectList([...projectList, {
           projectName: passedData.ptitle,
           projectOnlineStatus: false,
@@ -80,6 +81,7 @@ function Projects() {
     <div id="projects">
       {projectList.map((project, key) => (
         <Project
+          uniqueProjectId={project.uniqueProjectId}
           key={key}
           projectName={project.projectName}
           onlineStatus={project.projectOnlineStatus}

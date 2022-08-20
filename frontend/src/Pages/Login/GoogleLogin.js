@@ -5,15 +5,15 @@ const clientId = "1014276340059-orscm84ijkimm5vp5qkemp1kmjl4cvpe.apps.googleuser
 
 function Login(){
     const onSuccess = (response) => {
-            console.log('response will be sved in ls')
+        console.log('response will be sved in ls')
         axios.post("http://localhost:8080/auth/googleCallback", {
             body:response
         }).then((res)=>{
             if(res.data.status === 200){
+                console.log(res.data)
                 localStorage.setItem("token", res.data.token);
             }
         })
-
     };
 
     const onFailure = (response) => {

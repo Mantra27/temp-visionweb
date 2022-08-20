@@ -30,10 +30,20 @@ function AddProject(props) {
   };
 
   const onAdd = (add) =>{
+    const connectionTimeout = setTimeout(() =>{
+      toast({
+        title: "Oops, Connection timed out!",
+        description: "we're having trouble connecting to the server, make sure you an active and stable internet connection",
+        status: "error",
+        position: "top-right",
+        duration: 7000,
+        isClosable: true,
+      });
+    }, 4000);
 
     toast({
       title: "Trying to add new project",
-      description: "request has been sent to the server, waiting for to response. This may take some time, please be patient.",
+      description: "request has been sent to the server, waiting for the response. This may take some time, please be patient.",
       status: "info",
       position: "top-right",
       duration: 5000,
@@ -44,6 +54,7 @@ function AddProject(props) {
     flag.then((data) => {
       console.log('flag:', data)
       if(data.flag){
+        clearTimeout(connectionTimeout);
         onClose(); //closes the current popup
       }
     })

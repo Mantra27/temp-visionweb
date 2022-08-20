@@ -1,10 +1,46 @@
 const router = require("express").Router();
 const entry = require("../models/entry");
+const path = require("path");
+const jwt = require("jsonwebtoken");
+const Entry = require("../models/entry");
+const User = require("../models/user");
+
+require('dotenv').config({path: path.resolve(__dirname + '/../.env')});
+
+//-----------------------------------
+const jwtKey = process.env.jwtkey;
+//-----------------------------------
 
 router.get("/", (req:any, res:any, next:any)=>{
     return res.send("listening to the post requests on this endpoint");
 });
-router.post
+
+router.post("/update-values", (req:any, res:any, next:any)=>{
+    
+});
+
+//this endpoint will be be the most spammed in the server, [users will check values updation for their projects from here]
+router.post("/get-values", (req:any, res:any, next:any)=>{
+    const {token, projectId} = req.body;
+    if(!token) return res.status(200).send({status:404, message:'invalid token from client\'s side'});
+    jwt.verify(token, jwtKey, function(err:any, decoded:any) {
+        if(err) return res.status(200).send({status:404, message:"error while decoding your jwt token", err:JSON.stringify(err)});
+        if(decoded){
+            User.findOne({username: decoded.username}).then((data:any) => {
+                if(!data) return res.status(200).send({status:404, message:"error while getting data from server"});
+                Entry.findOne({user: data.email}).then((Data:any) => {
+                    if(!Data) return res.status(200).send({status:404, message:"logged into server the server, but failed to get data from server"});
+                        Data.metadata.map((elver:any, key:number)=>{
+                            if(elver.Project_id == projectId){
+                                return res.status(200).send({status:200, data:Data.metadata[key], message:"Data was successfully retrieved from the server"})
+                            }
+                        })
+                })
+            })
+        }
+    });   
+});
+
 //ultimate endpoint for posting data to the server from visionWeb
 router.post("/", async (req:any, res:any, next:any)=>{
     if(!req.body.user || !req.body.metadata || !req.body.token) return res.status(404).send({status: 404, message: "parameter(s) from the client side is missing."})
@@ -63,7 +99,7 @@ router.post("/", async (req:any, res:any, next:any)=>{
 
 router.post("/getdata", (req:any, res:any, next:any)=>{
 
-    if(req.body.token != "OQ4fnLvQnjNEDJtxTBdasn38Puv26o92") return res.json({status: 404, message: "invalid/empty token"});
+    if(req.body.token != process.env.getDbEntriesToken) return res.json({status: 404, message: "invalid/empty token"});
     entry.findOne({user: req.body.user}).then((resolve:any)=>{
         if(resolve) return res.json({status: 'ok', message: resolve});
         return res.json({status: 404, message: "no data found with certain username"});

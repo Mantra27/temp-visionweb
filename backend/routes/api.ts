@@ -14,12 +14,14 @@ const pwdreset = require('../models/pwdresetwh');
 const PASSWORD = require('../models/pwdresetwh');
 const Logs = require('../models/clientLogs');
 
+require('dotenv').config({path: path.resolve(__dirname + '/../.env')});
+
 //--------------------------------------------------
-const decryptKey4ev = "xmSJ@*431$#)Zo3"; //secret key to decode email verification urls
-const decryptKey4pwdrst = "n@*#sn!)7z3920"; //secret key to decode password reset urls
-const ConnectionT0kenKey = "DSM@)(81;#@$-90"; //secret key for
-const AiUserDataT0ken = "KANKCOQIWU1243GASHVD"; //secret key for storing data for ai model
-const jwtKey = "C<MAn2309*$@#mLSNA093u0"; //secret key for all jwt token validation
+const decryptKey4ev = process.env.decryptKey4ev; //secret key to decode email verification urls
+const decryptKey4pwdrst = process.env.decryptKey4pwdrst; //secret key to decode password reset urls
+const ConnectionT0kenKey = process.env.ConnectionT0kenKey; //secret key for
+const AiUserDataT0ken = process.env.AiUserDataT0ken; //secret key for storing data for ai model
+const jwtKey = process.env.jwtkey; //secret key for all jwt token validation
 //--------------------------------------------------
 
 router.use(fileUpload());
@@ -70,7 +72,6 @@ router.post("/get-user-info", (req:any, res:any) => {
             })
         }
     });   
-
 });
 
 router.get("/verifyme", (req:any, res:any, next:any)=>{
@@ -271,7 +272,7 @@ router.post("/resetpw", require("../service/passwordresetTimeout"), async (req:a
 
                     //resetting the password.
                     bcrypt.genSalt(10, async (err:any, salt:any)=> 
-                        bcrypt.hash(confirmPassword, salt, (err:any, newHash:any)=> {
+                    bcrypt.hash(confirmPassword, salt, (err:any, newHash:any)=> {
                             if(err) return res.status(404).send({status: 202, message:"error generating hash from the server, mail us on nandan@dicot.in"});
                             User.findOneAndUpdate({email: q1.email, password: newHash}).then((U:any) =>{
                                 if(U){
@@ -310,12 +311,15 @@ router.post("/addrole", (req:any, res:any)=>{
             User.findOne({ email: email }).then((result:any)=>{
                 if(!result) return res.status(200).send({status: 404, message:`this user ${email}, will have to register first before giving them a role!`});
                 const possibleRoles = ['owner', 'admin', 'manager', 'worker'];
+
                 //could be useless
-                const roleExists = possibleRoles.map((E:any)=>{
+                if(
+                    possibleRoles.map((E:any)=>{
                     if(role == E){return true;}
                     return false;
-                });
-                if(!roleExists) return res.status(200).send({status: 404, message:"client selected invalid role"});
+                    })
+                ) return res.status(200).send({status: 404, message:"client selected invalid role"});
+
                 //after setting the role, we'll also give him access to projects
                 result.role = role;
                 Entry.findOne({email:email}).then((entryResult:any) => {
@@ -415,7 +419,7 @@ router.post("/getprojects", (req:any, res:any)=>{
 router.post("/logs", (req:any, res:any) => {
     const {username, email, role, project, details, ip} = req.body;
     const Time = new Date().getTime();
-
+    
     const DraftLog = new Logs({
         username: username,
         email: email,
@@ -445,9 +449,9 @@ router.post("/feedback", async (req:any, res:any)=>{
 
     //--> dear developer, this all mess was created to download file from user from react(axios) and upload it to server and send it back to the admins(via mails)
 
-    // let {name, email, subject, contact, feedback, attachedFile = null} = req.body;
-    // if(name.trim() == '' || email.trim() == '' || subject.trim() == '' || contact.trim() == ''  || feedback.trim() == '' ) return res.status(200).send({status: 404, message:"something is missing from input fields"});
-    // let filename = uuidv4(); 
+    let {name, email, subject, contact, feedback, attachedFile = null} = req.body;
+    if(name.trim() == '' || email.trim() == '' || subject.trim() == '' || contact.trim() == ''  || feedback.trim() == '' ) return res.status(200).send({status: 404, message:"something is missing from input fields"});
+    let filename = uuidv4(); 
 
     // console.log(req.files)
     // if(req.files){
@@ -463,12 +467,12 @@ router.post("/feedback", async (req:any, res:any)=>{
     //     filename = null;
     // };
 
-    // //send mail to dicot admins(feedback)
-    // const adminMails = ["gohilmantra@gmail.com", "mantra@dicot.tech"];
-    // await adminMails.map(async (admins:any)=>{
-    //     await mailMan(admins, {subject:`Recieved new feeback!`, body:`name: ${name}\n from: ${email} \n subject: ${subject} \n ${contact} \n attachments:${attachedFile} \n Feedback:${feedback}`, attachments:{filename:filename, content: fs.createReadStream(path.join(__dirname,`/${filename}`))}});
-    //     console.log(`feedback sent to ${admins} successfully`)
-    // });
+    //send mail to dicot admins(feedback)
+    const adminMails = ["gohilmantra@gmail.com", "mantra@dicot.tech"];
+    await adminMails.map(async (admins:any)=>{
+        await mailMan(admins, {subject:`Recieved new feeback!`, body:`name: ${name}\n from: ${email} \n subject: ${subject} \n ${contact} \n attachments:${attachedFile} \n Feedback:${feedback}`, attachments:{filename:filename, content: fs.createReadStream(path.join(__dirname,`/${filename}`))}});
+        console.log(`feedback sent to ${admins} successfully`)
+    });
 
     return res.status(200).send({status: 200, message:"notified admins!"});
     

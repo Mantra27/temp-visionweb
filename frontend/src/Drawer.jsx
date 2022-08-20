@@ -7,6 +7,7 @@ import {
   DrawerContent,
   DrawerHeader,
   DrawerOverlay,
+  useToast
 } from "@chakra-ui/react";
 import { BsBellFill, BsFillQuestionCircleFill } from "react-icons/bs";
 import { FiArrowLeftCircle } from "react-icons/fi";
@@ -15,29 +16,35 @@ import { HiOutlineLogout, HiDatabase, HiOutlineSupport } from "react-icons/hi";
 import { FaRegMoneyBillAlt } from "react-icons/fa";
 import { SiDatabricks } from "react-icons/si";
 import axios from "axios"; 
-import {useState} from "react";
+import {useState, useEffect} from "react";
 
 function DrawerMenu(props) {
+  const toast = useToast();
   const [name, setName] = useState("Hello User");
   const [profile, setProfile] = useState("profile.jpg");
 
-  if(!localStorage.getItem("username") || !localStorage.getItem("avatarURL")){
-    axios.post("http://localhost:8080/api/get-user-info", {token: localStorage.getItem("token"), requestedFor:"username"}).then(async (results)=>{
-      if(results.data.status == 200){
+      if(!localStorage.getItem("username") || !localStorage.getItem("avatarURL")){
 
-        setName(results.data.data.username);
-        setProfile(results.data.data.avatar);
-        localStorage.setItem("avatarURL", results.data.data.avatar);
-        localStorage.setItem("username", results.data.data.username);
+        axios.post("http://localhost:8080/api/get-user-info", {token: localStorage.getItem("token"), requestedFor:"username"}).then(async (results)=>{
+          if(results.data.status == 200){
+            console.log(results.data);
+            setName(results.data.data.username);
+            setProfile(results.data.data.avatar);
+            localStorage.setItem("avatarURL", results.data.data.avatar);
+            localStorage.setItem("username", results.data.data.username);
+          }
+        }).catch((error)=>{
+          console.loog(error)
+        })
       }
-    })
-  }
-  else{
-    setTimeout(()=>{
-      setName(localStorage.getItem("username"));
-      setProfile(localStorage.getItem("avatarURL"));
-    }, 500)
-  }
+      else{
+        setTimeout(()=>{
+          setName(localStorage.getItem("username"));
+          setProfile(localStorage.getItem("avatarURL"));
+        }, 500)
+      }
+
+
   const navigate = useNavigate();
 
   return (

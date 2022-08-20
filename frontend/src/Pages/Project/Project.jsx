@@ -1,15 +1,35 @@
-import React from "react";
+import React, {useEffect} from "react";
 import "./project.css";
-
 import { FiArrowLeftCircle } from "react-icons/fi";
 import logo from "../../assets/Logo.svg";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import { Tabs, TabList, TabPanels, Tab, TabPanel } from "@chakra-ui/react";
-
 import GraphData from "./components/GraphData";
 import TableData from "./components/TableData";
+import axios from "axios";
 
 function Project() {
+  console.log("hi")
+  // const [searchParams, setSearchParams] = useSearchParams();
+  // const ProjectID = searchParams.get("graphId");
+
+  // const cycles = 0;
+
+  // useEffect(() => {
+  //   setInterval(() =>{
+  //     console.log("request has been sent");
+  //     axios.post("http://localhost:8080/db/get-values", {
+  //         token: localStorage.getItem("token"), 
+  //         projectId: ProjectID,
+  //       }).then((resolve)=>{
+
+  //           console.log(resolve.data.data)
+
+  //     });
+  
+  //   }, 5000)
+  // }, [])
+
   const navigate = useNavigate();
 
   React.useLayoutEffect(() => {
