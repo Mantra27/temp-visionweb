@@ -13,39 +13,131 @@ const crypt0 = require('crypto');
 const pwdreset = require('../models/pwdresetwh');
 const PASSWORD = require('../models/pwdresetwh');
 const Logs = require('../models/clientLogs');
-
 require('dotenv').config({path: path.resolve(__dirname + '/../.env')});
 
-//--------------------------------------------------
+//--------------------------------------------------------------------------------------------------------
 const decryptKey4ev = process.env.decryptKey4ev; //secret key to decode email verification urls
 const decryptKey4pwdrst = process.env.decryptKey4pwdrst; //secret key to decode password reset urls
 const ConnectionT0kenKey = process.env.ConnectionT0kenKey; //secret key for
 const AiUserDataT0ken = process.env.AiUserDataT0ken; //secret key for storing data for ai model
 const jwtKey = process.env.jwtkey; //secret key for all jwt token validation
-//--------------------------------------------------
+//--------------------------------------------------------------------------------------------------------
 
 router.use(fileUpload());
-
 //endpoint to connect vision-web with vision-c
-router.post("/createconnection", (req:any, res:any) => {
 
-    //get username and email from client's side(cookies, session);
+//this endpoint is used to connect vision c to vision web(will return username in res)
+router.post("/create-connection", (req:any, res:any) => {
     const {token} = req.body;
-    // if(!req.user) return res.status(404).json({status: 404, message:"no user logon"});
-    jwt.verify(token, jwtKey, function(err:any, decoded:any) {
-        if(err) return res.status(200).send({status:404, message:"error while decoding your jwt token", err:JSON.stringify(err)});
-        if(decoded){
-            const userConnectionToken = jwt.sign({username:decoded.username, email:decoded.email, time: new Date().getTime()}, ConnectionT0kenKey);
-            User.findOne({username: decoded.username}).then((response:any)=>{
-                response.connectionToken = userConnectionToken;
-            });
-        }
-    });
+
+    //also regenerate token from here
+    jwt.verify(token, ConnectionT0kenKey, function(err:any, decoded:any) {
+        if(err) return res.status(200).send({status: 404, success: false, err: JSON.stringify(err)});
+        if(decoded) return res.status(200).send({status: 200, success:true, username: decoded.username, modejwtdata: decoded.mode});
+        else return res.status(200).send({status: 200, success:false});
+    })
+});
+
+router.post("/get-data", (req:any, res:any) => {
+    const {token} = req.body;
+    if(!token) return res.status(200).send({status:404, message:'invalid token from the client'});
+    jwt.verify(token, ConnectionT0kenKey, function(err:any, decoded:any){
+        if(!decoded) return res.status(200).send({status:404, message: "error while verifying token"})
+        Entry.findOne({user: decoded.email}).then((entry:any) => {
+            if(!entry) return res.status(200).send({status:404, message:`found data null assigned with token: ${token}`});
+            return res.status(200).send({status:200, success: true, data: entry})
+        })
+    })
+});
+
+router.post("/update-data", (req:any, res:any) => {
+    console.log("trying to update data");
+    let {token, metadata} = req.body;
+    metadata = JSON.parse(metadata);
+    if(!token || !metadata) { return res.status(200).send({status: 404, message:"something is missing from client's end"})};
+        jwt.verify(token, ConnectionT0kenKey, function(err:any, decoded:any){
+            if(!decoded) return res.status(200).send({status:404, message: "error while verifying token"})
+            Entry.findOne({user: decoded.email}).then((entry:any) => {
+                if(err) return res.status(200).send({status: 404, success: false, err: JSON.stringify(err)});
+                if(decoded){
+                    //user is updating the data for the first time, so we'll have to create a new entry
+                    if(!entry){
+
+                        const DraftEntry = new Entry({
+                            accessToken: token,
+                            user: decoded.email,
+                            username: decoded.username,
+                            metadata: metadata, 
+                            LastModified: new Date().getTime()
+                        });
+                        DraftEntry.save();
+                        return res.status(200).json({status: 200, success: true, message:"this is your first time updating data, so we did make a new library for you"})
+
+                    }
+
+                    //user aint updating his/her data for the first time, he/she already tried to do so
+                    else{
+
+                        // this codes supporting single project only, since its metadata[0], first project's value will be replaced always
+                        // replace.metadata[0].Misc = metadata[0]
+
+                        // const mergeArrays = (Older:any, New:any) => {
+                        //     console.log("Older", Older, "new", New);
+                        //     let temp = [0];
+                        //     Older.map((VALUEE:any, KEYY:any) => {
+                        //         temp[KEYY] = VALUEE;
+                        //     });
+                        //     New.map((ZALLUE:any, ZEYY:any) =>{
+                        //         temp[temp.length] = ZALLUE;
+                        //     })
+                        //     return temp;
+                        // };
+                        
+                        // const addMemberToArray = (Older:any, New:any) => {
+                        //     Older[Older.length] = New;
+                        // };
+
+                        Entry.findOne({user:decoded.email}).then((replace:any) => {
+                            //theres new value in the input
+                            
+                            let flag = false;
+                            replace.metadata[0].Misc.forEach((val:any, key:any)=>{
+                                val.Devices.forEach((VAL:any, key:any)=>{
+                                    // if(VAL.Header == val.Header && VAL.val == val.val){ flag = true;}
+                                    metadata[0].Misc.Devices.forEach((VALL:any, KEYY:any)=>{
+                                        if(VAL.Header ==  VALL.Header && VAL.val == VALL.val){flag = true;}
+                                    })
+                                })
+                            })
+
+                            if(!flag){
+                                let newMetadata = {
+                                    Project: replace.metadata[0].Project,
+                                    Project_id: replace.metadata[0].Project_id,
+                                    Misc:[...replace.metadata[0].Misc, metadata[0].Misc]
+                                }
+    
+                                Entry.updateOne({username: decoded.username}, {$set: {"metadata":newMetadata}}).then((resulT:any) => {
+                                    console.log(resulT);
+                                    return res.status(200).send({status:200, message:"values are added successfully", success: true})
+                                })
+                            }
+                            else{
+                                console.log("already value exists")
+                                return res.status(200).send({status:404, message: "value already exists, no adding in the values"})
+                            }
+                        });
+                    }
+                }
+                else return res.status(200).send({status: 200, success:false, message:"something went wrong(user missing from db)"});
+            })
+           
+        })
 
 });
 
 //api/stat (for machine learning [big-brain]) 
-router.post("/stat", async (req:any, res:any)=>{
+router.post("/bigbrain", async (req:any, res:any)=>{
     const {body, token = null} = req;
     //kaushikee's logger will be added here
     // if(!token || token != AiUserDataT0ken) return res.status(404).json({status: 404, message:"invalid token from admin"});
@@ -60,6 +152,7 @@ router.get("/setToken", (req:any, res:any) => {
     else return res.status(404).send({status: 404, message:"no user logon!"})
 });
 
+//used to fetch data from client's frontend on refresh or login
 router.post("/get-user-info", (req:any, res:any) => {
     const {token} = req.body;
     if(!token) return res.status(200).send({status:404, message:'invalid /get-user-info token from the client'});
@@ -135,23 +228,19 @@ router.post("/requestpasswordreset", async (req:any, res:any, next:any)=>{
                         let mykey = crypt0.createCipher('aes-128-cbc', decryptKey4pwdrst);
                         let mystr = mykey.update(`{"email": "${email}", "token":"${resolve.username}", "t":"${CurrentTime}"}`, 'utf8', 'hex')
                         mystr += mykey.final('hex');
-
-                        await mailMan(email, {subject: "@Dicot Password Reset", body:`http://localhost:8080/wh/resetpw?end=${mystr}`}).then((RESOLVE:any)=>{
+                        await mailMan(email, {subject: "@Dicot Password Reset", body:`http://localhost:8080/api/resetpw?end=${mystr}`}).then((RESOLVE:any)=>{
                             const passwordResetRequest = new pwdreset({
                                 email: email,
                                 t: CurrentTime,
                                 token: resolve.username,
                                 ip: IP
                             });
-            
                             passwordResetRequest.save().then((resolve:any)=>{
                                 console.log("email must be sent");
                                 return res.status(202).send({status: 202, message: {respolve: resolve, message: "email also sent"}})
                             });
-                        })
-                        
+                        })   
                     }
-        
                 }).catch((error:any)=>{
                     console.log(error);
                     return res.status(404).send({status: 404, message:"error while seeing if the current password resetting webhook is in use or not"})
@@ -159,7 +248,6 @@ router.post("/requestpasswordreset", async (req:any, res:any, next:any)=>{
             }
             else return res.status(404).send({status: 404, message: `user not even registered (${email})`});
         }).catch((errr:any)=>{
-
             //this catch means theres no user attached with certain email, hence he/she can't reset the password
             console.log(errr)
             return res.status(404).send({status: 404, message: "error while checking if the user is connected with the email or not(pwd reset)"})
@@ -173,7 +261,7 @@ router.post("/requestpasswordreset", async (req:any, res:any, next:any)=>{
 
 })
 
-//remember this is a get request
+//remember this is a GET request
 router.get("/resetpw", (req:any, res:any, next:any)=>{
    try{
         if(!req.query.end) return res.status(404).send({status: 404, message:"unknown endpoint, was expecting endpoint with a query"});
@@ -201,7 +289,7 @@ router.get("/resetpw", (req:any, res:any, next:any)=>{
    }
 })
 
-//endpoint for changing password
+//endpoint for changing password not (resetting it)
 router.post("/changepassword", async (req:any, res:any, next:any)=>{
     if(!req.body.currentPassword || !req.body.newPassword || !req.body.confirmNewPassword || !req.body.email) return res.status(404).send({status:404, message:"missing param(s) from the client side"});
         const {currentPassword, newPassword, confirmNewPassword, email} = req.body;
@@ -302,6 +390,7 @@ router.post("/resetpw", require("../service/passwordresetTimeout"), async (req:a
 
 router.post("/addrole", (req:any, res:any)=>{
     //confirm password before this role addition
+
     const{sendermail, email, role} = req.body;
     try{
         User.findone({email: sendermail}).then((checkSendersRole:any)=>{
@@ -341,7 +430,6 @@ router.post("/addrole", (req:any, res:any)=>{
 //when a user adds a new project to the dashboard
 router.post("/addproject",(req:any, res:any) => {
     console.log('add project called');
-
     const {token, projects} = req.body;
 
     //side case handeling
@@ -398,6 +486,7 @@ router.post("/addproject",(req:any, res:any) => {
         }
     });
 });
+
 
 router.post("/getprojects", (req:any, res:any)=>{
     const {token} = req.body;

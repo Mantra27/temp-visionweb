@@ -10,6 +10,7 @@
 }
 
 #root {
+
     background-color: var(--background-color);
 }
 
@@ -108,12 +109,11 @@
     padding: 2vh 1vw;
 }
 
-/* Projects */
 
 
 .project {
     width: min(400px, 96vw);
-    margin: 5vh 2vw;
+    margin: 5vh 1vw;
     display: inline-block;
     background-color: var(--light-blue);
     border-radius: 2vh;

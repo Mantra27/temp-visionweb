@@ -6,7 +6,6 @@ const Entry = require("../models/entry");
 const User = require("../models/user");
 
 require('dotenv').config({path: path.resolve(__dirname + '/../.env')});
-
 //-----------------------------------
 const jwtKey = process.env.jwtkey;
 //-----------------------------------

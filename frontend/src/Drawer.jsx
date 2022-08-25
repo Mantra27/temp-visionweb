@@ -34,7 +34,7 @@ function DrawerMenu(props) {
             localStorage.setItem("username", results.data.data.username);
           }
         }).catch((error)=>{
-          console.loog(error)
+          console.log(error)
         })
       }
       else{

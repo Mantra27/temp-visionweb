@@ -22,7 +22,7 @@ try{
                 to: track,
                 subject: content.subject,
                 html: content.body,
-                attachments:[{filename: content.attachments.filename = null, content: content.attachments.content = null}],
+                // attachments:[{filename: content.attachments.filename = null, content: content.attachments.content = null}],
             };
             
             transporter.sendMail(mailOptions, (error:any, info:any) => {

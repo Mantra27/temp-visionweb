@@ -17,8 +17,9 @@ const fileUpload = require('express-fileupload');
 
 require('dotenv').config({path: path.resolve(__dirname + '/.env')});
 
-//middlwares/cors
-// app.use(express.static("/Users/surge/Desktop/code/dicot/v2/frontend/build"))
+// middlwares/cors
+// app.use(express.static("/Users/surge/Desktop/code/dicot/v2/frontend/build"));
+
 app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({extended: true}));
@@ -34,13 +35,11 @@ console.log("Starting the server...")
 mongoose.connect(process.env.DBURL, { useNewUrlParser: true, useUnifiedTopology: true})
     .then((res:any)=>{  
         console.log(`http://localhost:${process.env.PORT || 8080}`); 
-
             //all the root backend endpoints
             app.use('/', index);
             app.use('/auth', auth);
             app.use('/db', entry);  
             app.use('/api', api);
-
         //starting the server (backend[8080] -- frontend[3000])
         app.listen(process.env.port || 8080);
         // const result = execSync(`cd ${__dirname}/../frontend && npm start`);

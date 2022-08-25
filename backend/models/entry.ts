@@ -19,7 +19,7 @@ const metadataschema = mongoose.Schema({
             type: String,
         },
 
-        Misc: {
+        Misc: [{
 
             Timed:{
                 type: String,
@@ -32,7 +32,7 @@ const metadataschema = mongoose.Schema({
                 }
             }]
 
-        },
+        }],
 
     }
 )
@@ -48,6 +48,10 @@ const entryschema = new Schema({
         type: String,
         required:true
     },
+
+    accessToken: {
+        type: String
+    }, 
 
     LastModified: {
         type: String,
