@@ -79,7 +79,15 @@ function Projects() {
 
   return (
     <div id="projects">
-      {projectList.map((project, key) => (
+      <Project
+          uniqueProjectId={"JnkjA5267849kdHSBdjkshfkh783ys"}
+          key="1"
+          projectName="Temp"
+          onlineStatus='true'
+          desc="Temperature demo"
+          location='Ahemdabad'
+        />
+      {/* {projectList.map((project, key) => (
         <Project
           uniqueProjectId={project.uniqueProjectId}
           key={key}
@@ -88,7 +96,7 @@ function Projects() {
           desc={project.desc}
           location={project.location}
         />
-      ))}
+      ))} */}
       <AddProject passdata = {passdata}/>
     </div>
   );

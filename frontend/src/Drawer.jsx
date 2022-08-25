@@ -91,7 +91,7 @@ function DrawerMenu(props) {
             />
           </div>
           <div className="hello-user">
-            <img src={profile} alt="..." />
+            <img src={"https://avatars.dicebear.com/api/bottts/d7cd5d40-d318-4bc4.svg"} alt="..." />
             {name}
           </div>
         </DrawerHeader>

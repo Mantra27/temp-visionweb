@@ -68,7 +68,7 @@ function Login() {
     try {
       const url = "http://localhost:8080/auth/login";
       const Data = await axios.post(url, data);
-      if(!Data.data.token){
+      if(Data.data.token){
         toast({
           title: "Incorrect details",
           description: "Incorrect email or password",
