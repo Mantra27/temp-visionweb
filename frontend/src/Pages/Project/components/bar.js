@@ -1,5 +1,5 @@
-import {React,useState, useEffect} from 'react'
-import {Doughnut, Pie, Line} from 'react-chartjs-2'
+import {React,useState} from 'react'
+import {Line} from 'react-chartjs-2'
 import {Chart, ArcElement} from 'chart.js'
 import {CategoryScale} from 'chart.js'; 
 import {registerables} from 'chart.js';

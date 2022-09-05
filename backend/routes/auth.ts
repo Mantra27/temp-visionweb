@@ -67,7 +67,6 @@ passport.deserializeUser(function(user:any, done:any) {
 // }));
 
 router.post("/googleCallback", (req:any, res:any)=>{
-    console.log('trying to set google token')
     const body = req.body;
     const Ip = "0.0.0.0";
     
@@ -148,6 +147,7 @@ router.get("/localLoginDone", (req:any, res:any)=>{
     res.status(200).send("<h1>login done</h1>");
 });
 
+//this endpoint will be used when user logges in from cookie
 router.post("/verifyjwt", (req:any, res:any)=>{
     const {token, Ip} = req.body;
     jwt.verify(token, jwt.verify, (decoded:any)=>{

@@ -12,6 +12,7 @@ const Entry = require("../models/entry");
 const crypt0 = require('crypto');
 const pwdreset = require('../models/pwdresetwh');
 const PASSWORD = require('../models/pwdresetwh');
+const ProjectVerify = require('../models/PVerification');
 const Logs = require('../models/clientLogs');
 require('dotenv').config({path: path.resolve(__dirname + '/../.env')});
 
@@ -29,6 +30,18 @@ router.use(fileUpload());
 //this endpoint is used to connect vision c to vision web(will return username in res)
 router.post("/create-connection", (req:any, res:any) => {
     const {token} = req.body;
+    ProjectVerify.findOne({uuid: token}, (err:any, resolver:any)=>{
+        if(err) return res.status(200).send({status: 404, message: 'something went wrong while checking for uuid in db', err: JSON.stringify(err)});
+        //no verify request existed in db
+        if(!resolver) return res.status(200).send({status: 404, message:"no active uuid found in db"});
+        //this this point, if the instance is still alive, it means a verify request is already existed in db.
+
+        const newToken = resolver.accessToken;
+        ProjectVerify.delete({uuid: token}, (solve:any) => {
+            console.log({solve})
+        });
+        return res.status(200).send({status: 200, message: "success", token: newToken})
+    });
 
     //also regenerate token from here
     jwt.verify(token, ConnectionT0kenKey, function(err:any, decoded:any) {
@@ -38,103 +51,91 @@ router.post("/create-connection", (req:any, res:any) => {
     })
 });
 
-router.post("/get-data", (req:any, res:any) => {
-    const {token} = req.body;
-    if(!token) return res.status(200).send({status:404, message:'invalid token from the client'});
-    jwt.verify(token, ConnectionT0kenKey, function(err:any, decoded:any){
-        if(!decoded) return res.status(200).send({status:404, message: "error while verifying token"})
-        Entry.findOne({user: decoded.email}).then((entry:any) => {
-            if(!entry) return res.status(200).send({status:404, message:`found data null assigned with token: ${token}`});
-            return res.status(200).send({status:200, success: true, data: entry})
-        })
-    })
-});
+// router.post("/update-data", (req:any, res:any) => {
+//     console.log("trying to update data");
+//     let {token, metadata} = req.body;
+//     metadata = JSON.parse(metadata);
+//     if(!token || !metadata) { return res.status(200).send({status: 404, message:"something is missing from client's end"})};
+//         jwt.verify(token, ConnectionT0kenKey, function(err:any, decoded:any){
+//             if(!decoded) return res.status(200).send({status:404, message: "error while verifying token"})
+//             Entry.findOne({user: decoded.email}).then((entry:any) => {
+//                 if(err) return res.status(200).send({status: 404, success: false, err: JSON.stringify(err)});
+//                 if(decoded){
+//                     //user is updating the data for the first time, so we'll have to create a new entry
+//                     if(!entry){
 
-router.post("/update-data", (req:any, res:any) => {
-    console.log("trying to update data");
-    let {token, metadata} = req.body;
-    metadata = JSON.parse(metadata);
-    if(!token || !metadata) { return res.status(200).send({status: 404, message:"something is missing from client's end"})};
-        jwt.verify(token, ConnectionT0kenKey, function(err:any, decoded:any){
-            if(!decoded) return res.status(200).send({status:404, message: "error while verifying token"})
-            Entry.findOne({user: decoded.email}).then((entry:any) => {
-                if(err) return res.status(200).send({status: 404, success: false, err: JSON.stringify(err)});
-                if(decoded){
-                    //user is updating the data for the first time, so we'll have to create a new entry
-                    if(!entry){
+//                         const DraftEntry = new Entry({
+//                             accessToken: token,
+//                             user: decoded.email,
+//                             username: decoded.username,
+//                             metadata: metadata, 
+//                             LastModified: new Date().getTime()
+//                         });
+//                         DraftEntry.save();
+//                         return res.status(200).json({status: 200, success: true, message:"this is your first time updating data, so we did make a new library for you"})
 
-                        const DraftEntry = new Entry({
-                            accessToken: token,
-                            user: decoded.email,
-                            username: decoded.username,
-                            metadata: metadata, 
-                            LastModified: new Date().getTime()
-                        });
-                        DraftEntry.save();
-                        return res.status(200).json({status: 200, success: true, message:"this is your first time updating data, so we did make a new library for you"})
+//                     }
 
-                    }
+//                     //user aint updating his/her data for the first time, he/she already tried to do so
+//                     else{
 
-                    //user aint updating his/her data for the first time, he/she already tried to do so
-                    else{
+//                         // this codes supporting single project only, since its metadata[0], first project's value will be replaced always
+//                         // replace.metadata[0].Misc = metadata[0]
 
-                        // this codes supporting single project only, since its metadata[0], first project's value will be replaced always
-                        // replace.metadata[0].Misc = metadata[0]
-
-                        // const mergeArrays = (Older:any, New:any) => {
-                        //     console.log("Older", Older, "new", New);
-                        //     let temp = [0];
-                        //     Older.map((VALUEE:any, KEYY:any) => {
-                        //         temp[KEYY] = VALUEE;
-                        //     });
-                        //     New.map((ZALLUE:any, ZEYY:any) =>{
-                        //         temp[temp.length] = ZALLUE;
-                        //     })
-                        //     return temp;
-                        // };
+//                         // const mergeArrays = (Older:any, New:any) => {
+//                         //     console.log("Older", Older, "new", New);
+//                         //     let temp = [0];
+//                         //     Older.map((VALUEE:any, KEYY:any) => {
+//                         //         temp[KEYY] = VALUEE;
+//                         //     });
+//                         //     New.map((ZALLUE:any, ZEYY:any) =>{
+//                         //         temp[temp.length] = ZALLUE;
+//                         //     })
+//                         //     return temp;
+//                         // };
                         
-                        // const addMemberToArray = (Older:any, New:any) => {
-                        //     Older[Older.length] = New;
-                        // };
+//                         // const addMemberToArray = (Older:any, New:any) => {
+//                         //     Older[Older.length] = New;
+//                         // };
 
-                        Entry.findOne({user:decoded.email}).then((replace:any) => {
-                            //theres new value in the input
+//                         Entry.findOne({user:decoded.email}).then((replace:any) => {
+//                             //theres new value in the input
                             
-                            let flag = false;
-                            replace.metadata[0].Misc.forEach((val:any, key:any)=>{
-                                val.Devices.forEach((VAL:any, key:any)=>{
-                                    // if(VAL.Header == val.Header && VAL.val == val.val){ flag = true;}
-                                    metadata[0].Misc.Devices.forEach((VALL:any, KEYY:any)=>{
-                                        if(VAL.Header ==  VALL.Header && VAL.val == VALL.val){flag = true;}
-                                    })
-                                })
-                            })
+//                             let flag = false;
+//                             replace.metadata[0].Misc.forEach((val:any, key:any)=>{
+//                                 val.Devices.forEach((VAL:any, key:any)=>{
+//                                     // if(VAL.Header == val.Header && VAL.val == val.val){ flag = true;}
+//                                     metadata[0].Misc.Devices.forEach((VALL:any, KEYY:any)=>{
+//                                         if(VAL.Header ==  VALL.Header && VAL.val == VALL.val){flag = true;}
+//                                     })
+//                                 })
+//                             })
 
-                            if(!flag){
-                                let newMetadata = {
-                                    Project: replace.metadata[0].Project,
-                                    Project_id: replace.metadata[0].Project_id,
-                                    Misc:[...replace.metadata[0].Misc, metadata[0].Misc]
-                                }
+//                             if(!flag){
+//                                 let newMetadata = {
+//                                     Project: replace.metadata[0].Project,
+//                                     Project_id: replace.metadata[0].Project_id,
+//                                     Misc:[...replace.metadata[0].Misc, metadata[0].Misc]
+//                                 }
     
-                                Entry.updateOne({username: decoded.username}, {$set: {"metadata":newMetadata}}).then((resulT:any) => {
-                                    console.log(resulT);
-                                    return res.status(200).send({status:200, message:"values are added successfully", success: true})
-                                })
-                            }
-                            else{
-                                console.log("already value exists")
-                                return res.status(200).send({status:404, message: "value already exists, no adding in the values"})
-                            }
-                        });
-                    }
-                }
-                else return res.status(200).send({status: 200, success:false, message:"something went wrong(user missing from db)"});
-            })
+//                                 Entry.updateOne({username: decoded.username}, {$set: {"metadata":newMetadata}}).then((resulT:any) => {
+//                                     console.log(resulT);
+//                                     return res.status(200).send({status:200, message:"values are added successfully", success: true})
+//                                 })
+//                             }
+//                             else{
+//                                 console.log("already value exists")
+//                                 return res.status(200).send({status:404, message: "value already exists, no adding in the values"})
+//                             }
+//                         });
+//                     }
+//                 }
+//                 else return res.status(200).send({status: 200, success:false, message:"something went wrong(user missing from db)"});
+//             })
            
-        })
+//         })
 
-});
+// });
 
 //api/stat (for machine learning [big-brain]) 
 router.post("/bigbrain", async (req:any, res:any)=>{
@@ -142,14 +143,8 @@ router.post("/bigbrain", async (req:any, res:any)=>{
     //kaushikee's logger will be added here
     // if(!token || token != AiUserDataT0ken) return res.status(404).json({status: 404, message:"invalid token from admin"});
     const filename = uuidv4(); // '110ec58a-a0f2-4ac4-8393-c866d813b8d1'
-    await fs.writeFileSync(`/Users/surge/Desktop/code/dicot/v2/backend/serverBasedAi/${filename}.json`, JSON.stringify(body.body));
+    await fs.writeFileSync(`/Users/surge/Desktop/code/dicot/v2/backend/_dataBigBrain/${filename}.json`, JSON.stringify(body.body));
     return res.status(200).json({status: 200, message:`file created successfully with the name ${filename}`});
-});
-
-//this endpoint was to provide token from google auth for logging in from diffrent port(8080 and 3000)
-router.get("/setToken", (req:any, res:any) => {
-    if(req.user) return res.status(200).json({statusCode:'ok', token:JSON.stringify(req.user)});
-    else return res.status(404).send({status: 404, message:"no user logon!"})
 });
 
 //used to fetch data from client's frontend on refresh or login
@@ -166,6 +161,7 @@ router.post("/get-user-info", (req:any, res:any) => {
         }
     });   
 });
+
 
 router.get("/verifyme", (req:any, res:any, next:any)=>{
     try{
@@ -340,7 +336,7 @@ router.post("/resetpw", require("../service/passwordresetTimeout"), async (req:a
    try{
         if(!req.body.password || !req.body.confirmPassword || !req.body.portalToken) return res.status(404).send({status:404, message:"missing param(s) from the client side"});
         const {password, confirmPassword, portalToken} = req.body;
-
+        
         if(password != confirmPassword) return res.status(403).send({status:403, message:"password mismatch, session also expired"});
 
         //decoding using decypher to get email and username
@@ -429,7 +425,6 @@ router.post("/addrole", (req:any, res:any)=>{
 
 //when a user adds a new project to the dashboard
 router.post("/addproject",(req:any, res:any) => {
-    console.log('add project called');
     const {token, projects} = req.body;
 
     //side case handeling
@@ -442,34 +437,60 @@ router.post("/addproject",(req:any, res:any) => {
         if(err) return res.status(200).send({status:404, message:"error while decoding your jwt token", err:JSON.stringify(err)});
         if(decoded){
             Entry.findOne({username: decoded.username}).then((Z:any) => {
+                const VISON_C_CLIENT = uuidv4();
                 if(!Z){
                     //user never created a project before, its his/her first
                     User.findOne({username: decoded.username}).then((draftusername:any) => {
                         let email = draftusername.email ?? 'notfound';
-                        const draftEntry = Entry({
+
+                        const university = uuidv4();
+                        const accessTOKEN = jwt.sign({Project: projects[0].projectName, uuid: university }, ConnectionT0kenKey);
+                        Entry({
                             user: email,
                             username: decoded.username,
+                            VISON_C_TOKEN: VISON_C_CLIENT,
                             LastModified: new Date().getTime(),
                             metadata:[
                                 {
                                     Project: projects[0].projectName,
-                                    Project_id: uuidv4(),
+                                    Project_id: university,
+                                    accessToken: accessTOKEN,
                                     Description: projects[0].desc,
                                     Location: projects[0].location,
+                                    IsVerified: 0,
                                     Misc:{}
                                 }
                             ]
                         }).save();
-                        return res.status(200).send({status:200, message:"new project created successfully"})
+
+                        const DraftProjectVerification = ProjectVerify({
+                            Project: projects[0].projectName,
+                            Project_id: university,
+                            username: decoded.username,
+                            email: email,
+                            accessToken: accessTOKEN,
+                            VISON_C_CLIENT: VISON_C_CLIENT,
+                            uuid: university,
+                            LastModified: String(new Date().getTime())
+                        });
+
+                        DraftProjectVerification.save();
+
+                        return res.status(200).send({status:200, message:"new project created successfully", uuid: university})
                     });
                 }
 
                 else{
+                    const university = uuidv4();
+                    const accessTOKEN = jwt.sign({Project: projects[0].projectName, uuid: university }, ConnectionT0kenKey);
+
                     Entry.updateOne({username: decoded.username}, {$push: {"metadata":
                             {
                                 Project: projects[0].projectName,
-                                Project_id: uuidv4(),
+                                Project_id: university,
+                                accessToken: accessTOKEN,
                                 Description: projects[0].desc,
+                                IsVerified: 0,
                                 Location: projects[0].location,
                                 Misc:{}
                             }
@@ -477,8 +498,18 @@ router.post("/addproject",(req:any, res:any) => {
                     })
                     .then((results:any)=>{
                         if(!results.acknowledged) return res.status(200).send({status:404, message:"coulnd add new project"});
-                        console.log('new project send from server')
-                        return res.status(200).send({status:200, message:"new project created successfully"})
+                        const DraftProjectVerification = ProjectVerify({
+                            Project: projects[0].projectName,
+                            Project_id: university,
+                            username: decoded.username,
+                            accessToken: accessTOKEN,
+                            VISON_C_CLIENT: VISON_C_CLIENT,
+                            uuid: university,
+                            LastModified: String(new Date().getTime())
+                        });
+
+                        DraftProjectVerification.save();
+                        return res.status(200).send({status:200, message:"new project created successfully", uuid:university})
                     })
                 }
 

@@ -4,7 +4,6 @@ import { useFormControlStyles, useToast } from "@chakra-ui/react";
 
 
 function Project(props) {
-  console.log("ifjsdi")
   const toast = useToast();
   const navigate = useNavigate();
   
@@ -20,9 +19,9 @@ function Project(props) {
         </p>
           <strong>Status:</strong>{" "}
           {props.onlineStatus ? (
-            <span style={{ color: "green", fontWeight: "600" }}>Online</span>
+            <span style={{ color: "green", fontWeight: "600" }}>Connected</span>
           ) : (
-            <span style={{ color: "red", fontWeight: "600" }}>Offline</span>
+            <span style={{ color: "red", fontWeight: "600" }}>No Connection</span>
           )}
         </p>
         
@@ -52,7 +51,6 @@ function Project(props) {
 
           // }
           //else{
-            console.log("HELLO DA")
             e.preventDefault();
             navigate(`/project?graphId=${e.target.dataset.uniqueprojectid ?? "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6Im1hbnRyYSIsImVtYWlsIjoiZ29oaWxtYW50cmFAZ21haWwuY29tIiwidGltZSI6MTY2MTMzNzU2OTY5OCwiaWF0IjoxNjYxMzM3NTY5fQ.U4ayvh7LlK2XOmQ5JTLnJjSyzD7uQ8rnbrytcXMjcig"}`);
           //}

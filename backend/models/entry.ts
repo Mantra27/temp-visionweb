@@ -7,13 +7,29 @@ const metadataschema = mongoose.Schema({
             type: String,
         },
 
+        _clientSidedProjectName:{
+            type: String
+        },
+
         Location: {
             type: String,
         },
         
+        IsVerified: {
+            type: Number,
+        },
+
+        isSuspended: {
+            type: Boolean,
+        },
+
         Description: {
             type: String,
         },
+
+        accessToken:{
+            type: String,
+        }, 
 
         Project_id: {
             type: String,
@@ -27,9 +43,9 @@ const metadataschema = mongoose.Schema({
 
             Devices: [{
                 Header: String,
-                val: {
-                    type: String,
-                }
+                val: [{
+                    type: Object,
+                }]
             }]
 
         }],
@@ -49,7 +65,7 @@ const entryschema = new Schema({
         required:true
     },
 
-    accessToken: {
+    VISON_C_TOKEN: {
         type: String
     }, 
 

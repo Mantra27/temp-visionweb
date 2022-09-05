@@ -10,6 +10,10 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "uuid":"@latest",
+    "express-fileupload": "@latest",
+    "express-session": "@latest",
+    "nodemailer": "@latest",
     "bcrypt": "^5.0.1",
     "cookie-session": "^2.0.0",
     "cors": "^2.8.5",

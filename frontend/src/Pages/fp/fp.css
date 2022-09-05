@@ -1,0 +1,110 @@
+.App {
+  font-family: sans-serif;
+  text-align: center;
+}
+
+html {
+  background: #f3faef;
+
+  width: 100%;
+  height: 100%;
+  font-family: "Roboto";
+}
+
+.logoImage {
+  position: absolute;
+  text-align: center;
+  width: 26.4375rem;
+  height: 16.028125rem;
+  left: 550px;
+  top: 10px;
+  display: flex;
+}
+
+#input-container {
+  max-width: 60rem;
+}
+#headerText {
+  text-align: center;
+}
+.input {
+  position: relative;
+  width: 750px;
+  height: 300px;
+  left: 365px;
+  top: 250px;
+
+  background: #f3fbee;
+  box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25),
+    inset 0px 4px 4px rgba(0, 0, 0, 0.25);
+  border-radius: 30px;
+}
+
+.text {
+  position: static;
+  height: 42px;
+  left: 468px;
+  top: 538px;
+  padding-top: 36px;
+
+  font-family: "Roboto";
+  font-style: normal;
+  font-weight: 500;
+  font-size: 36px;
+  line-height: 42px;
+  text-align: center;
+  color: #000000;
+}
+
+.submit_button {
+  position: relative;
+  width: 120px;
+  height: 40px;
+
+  background: #343434;
+  border-radius: 50px;
+  font-family: "Roboto";
+  font-style: normal;
+  font-weight: 400;
+  font-size: 20px;
+  line-height: 28px;
+  text-align: center;
+  margin-left: 120px;
+  margin-top: 20px;
+  color: #ffffff;
+}
+
+.center {
+  margin-left: 123px;
+  border: 0;
+  border-radius: 2px;
+  border-bottom: solid;
+  background: #f3fbee;
+  padding: 8px 3px;
+  width: 502px;
+  font-size: 15px;
+}
+
+.text2 {
+  margin-left: 123px;
+  font-family: "Roboto";
+  font-style: normal;
+  font-weight: 400;
+  font-size: 24px;
+  line-height: 28px;
+}
+
+.registerText {
+  font-family: "Roboto";
+  font-style: normal;
+  font-weight: 400;
+  font-size: 24px;
+  line-height: 28px;
+  color: black;
+}
+
+main-div {
+  position: fixed;
+}
+
+/* Responsive design */

@@ -12,6 +12,7 @@ import Settings from "./Pages/Settings/App";
 import Project from "./Pages/Project/Project";
 import { useDisclosure } from "@chakra-ui/react";
 import Setting from "./Pages/Settings/Setting";
+import FP from "./Pages/fp/App";
 
 function App() {
   const { isOpen, onOpen, onClose } = useDisclosure();
@@ -26,7 +27,7 @@ function App() {
         }
       />
       <Route path="/auth/login" exact element={<Login />} />
-
+      <Route path="/auth/fp" exact element={<FP />} />
       <Route path="/auth/register" exact element={<Register />} />
       <Route
         path="/billing"

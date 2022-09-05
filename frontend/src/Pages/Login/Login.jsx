@@ -11,6 +11,7 @@ import axios from "axios";
 import {gapi} from "gapi-script";
 
 function Login() {
+  
   const clientId = "https://console.cloud.google.com/apis/credentials/oauthclient/1014276340059-orscm84ijkimm5vp5qkemp1kmjl4cvpe.apps.googleusercontent.com?project=crafty-booth-339503";
   const navigate = useNavigate();
   React.useLayoutEffect(() => {
@@ -68,7 +69,7 @@ function Login() {
     try {
       const url = "http://localhost:8080/auth/login";
       const Data = await axios.post(url, data);
-      if(Data.data.token){
+      if(!Data.data.token){
         toast({
           title: "Incorrect details",
           description: "Incorrect email or password",
@@ -105,7 +106,7 @@ function Login() {
   
   return (
     <Box h="100vh" w="100vw" id="login" bgColor="#F1FAEE">
-      <Box position="absolute" top="5%" className="background">
+      <Box position="absolute" top="5%" className="background" >
         <div className="lightblue"></div>
         <div className="darkblue"></div>
       </Box>

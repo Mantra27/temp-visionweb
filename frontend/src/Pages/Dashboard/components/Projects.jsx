@@ -16,9 +16,9 @@ function Projects() {
         draft[key] = {
             projectName: value.Project,
             uniqueProjectId: value.Project_id,
-            projectOnlineStatus: false,
             location: value.Location,
             desc: value.Description,
+            projectOnlineStatus: value.IsVerified
         }
       });
 
@@ -40,7 +40,6 @@ function Projects() {
       desc: passedData.pdescription
 
     }]}).then(async (results)=>{
-
       if(results.data.status == 200){
 
         toast({
@@ -51,12 +50,15 @@ function Projects() {
           duration: 5000,
           isClosable: true,
         });
-        
+
         await setProjectList([...projectList, {
+          
           projectName: passedData.ptitle,
           projectOnlineStatus: false,
           location:passedData.plocation,
           desc: passedData.pdescription,
+          uniqueProjectId: results.data.uuid,
+          
         }]);
 
         return {flag: true, message: 'new data added successfully!'};
@@ -76,18 +78,10 @@ function Projects() {
     });
 
   };
-
+  
   return (
     <div id="projects">
-      <Project
-          uniqueProjectId={"JnkjA5267849kdHSBdjkshfkh783ys"}
-          key="1"
-          projectName="Temp"
-          onlineStatus='true'
-          desc="Temperature demo"
-          location='Ahemdabad'
-        />
-      {/* {projectList.map((project, key) => (
+      {projectList.map((project, key) => (
         <Project
           uniqueProjectId={project.uniqueProjectId}
           key={key}
@@ -96,7 +90,7 @@ function Projects() {
           desc={project.desc}
           location={project.location}
         />
-      ))} */}
+      ))}
       <AddProject passdata = {passdata}/>
     </div>
   );

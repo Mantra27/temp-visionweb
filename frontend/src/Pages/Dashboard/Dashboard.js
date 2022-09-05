@@ -21,7 +21,6 @@ function App(props) {
 // googlesignincheck();
 
   React.useLayoutEffect(() => {
-    console.log("dashie dashie")
     document.title = "Dashboard";
     if (localStorage.getItem("token") == null) {
       setTimeout(() => {

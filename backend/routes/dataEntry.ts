@@ -8,104 +8,89 @@ const User = require("../models/user");
 require('dotenv').config({path: path.resolve(__dirname + '/../.env')});
 //-----------------------------------
 const jwtKey = process.env.jwtkey;
+const ConnectionT0kenKey = process.env.ConnectionT0kenKey; //secret key for
 //-----------------------------------
 
 router.get("/", (req:any, res:any, next:any)=>{
     return res.send("listening to the post requests on this endpoint");
 });
 
-router.post("/update-values", (req:any, res:any, next:any)=>{
-    
-});
+router.post("/update-data", (req:any, res:any)=>{
+    const {token = null, metadata = null} = req.body;
+    if(!token || !metadata) return res.status(200).send({status:404, message:"a query(s) is missing from client, try checking your posting data with 2 params a TOKEN and A METADATA"})
+})
 
 //this endpoint will be be the most spammed in the server, [users will check values updation for their projects from here]
-router.post("/get-values", (req:any, res:any, next:any)=>{
-    const {token, projectId} = req.body;
-    if(!token) return res.status(200).send({status:404, message:'invalid token from client\'s side'});
-    jwt.verify(token, jwtKey, function(err:any, decoded:any) {
-        if(err) return res.status(200).send({status:404, message:"error while decoding your jwt token", err:JSON.stringify(err)});
-        if(decoded){
-            User.findOne({username: decoded.username}).then((data:any) => {
-                if(!data) return res.status(200).send({status:404, message:"error while getting data from server"});
-                Entry.findOne({user: data.email}).then((Data:any) => {
-                    if(!Data) return res.status(200).send({status:404, message:"logged into server the server, but failed to get data from server"});
-                        Data.metadata.map((elver:any, key:number)=>{
-                            if(elver.Project_id == projectId){
-                                return res.status(200).send({status:200, data:Data.metadata[key], message:"Data was successfully retrieved from the server"})
+// router.post("/get-values", (req:any, res:any, next:any)=>{
+//     const {token, projectId} = req.body;
+//     if(!token) return res.status(200).send({status:404, message:'invalid token from client\'s side'});
+//     jwt.verify(token, jwtKey, function(err:any, decoded:any) {
+//         if(err) return res.status(200).send({status:404, message:"error while decoding your jwt token", err:JSON.stringify(err)});
+//         if(decoded){
+//             User.findOne({username: decoded.username}).then((data:any) => {
+//                 if(!data) return res.status(200).send({status:404, message:"error while getting data from server"});
+//                 Entry.findOne({user: data.email}).then((Data:any) => {
+//                     if(!Data) return res.status(200).send({status:404, message:"logged into server the server, but failed to get data from server"});
+//                         Data.metadata.map((elver:any, key:number)=>{
+//                             if(elver.Project_id == projectId){
+//                                 return res.status(200).send({status:200, data:Data.metadata[key], message:"Data was successfully retrieved from the server"})
+//                             }
+//                         })
+//                 })
+//             })
+//         }
+//     });   
+// });
+
+
+//this endpoint will be responsible for fetching data from the server using clients token to update the chart component
+router.post("/get-data", (req:any, res:any) => {
+    const {token, user} = req.body; 
+    //token will be unique uuidv4 graph id, user will be logged in user's token
+
+    if(!token || !user) return res.status(200).send({status:404, message:'invalid token/user logo-on from the client'});
+
+    jwt.verify(user, jwtKey, function(err:any, userData:any) {
+        if(err) return res.status(200).send({status: 404, message: "error while decoding token(jwtkey)", error: JSON.stringify(err)});
+        if(userData){
+
+            // {
+            //     userData: {
+            //       ip: '0.0.0.0',
+            //       expires: null,
+            //       username: 'Nandan S.',
+            //       iat: 1662123124
+            //     }
+            //   }
+
+            const requesterName = userData.username;
+            Entry.findOne({"metadata.accessToken": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJQcm9qZWN0IjoiZmlyc3QiLCJ1dWlkIjoiNTgyMGRjMjMtNzdjYi00Y2RlLWJiMTYtNTQ2MTA4NWI4NTZjIiwiaWF0IjoxNjYyMDEwNDcwfQ.BnTlnL5FROlABEHoJBFvGiL1bIC2qfL7VSa-YlS98HE"}).then((Resign:any) => {
+                if(!Resign) return res.status(200).send({status:404, message:"something went wrong while searching graph-id"});
+                if(Resign.username != requesterName) return res.status(200).send({status:404, message:"youre doing something fishy"});
+
+                    const Payload = new Promise((PromiseResolve, PromiseReject ) => {
+                        let boolean = false;
+                        Resign.metadata.forEach((element:any, index:any) => {
+                            if(element.Project_id == token){
+                                boolean = true;
+                                return PromiseResolve(element);
                             }
                         })
-                })
+                        if(!boolean) return PromiseReject("cannnot find certain project with token");
+                    })
+                    Payload.then((er:any) => {
+                        if(!er.IsVerified) return res.status(200).send({status:404, message:"current project aint verified(connected) to any active instense"});
+                        return res.status(200).send({status:200, message:"success", _values: er.Misc})
+                    }).catch((errr:any) => {
+                        return res.status(200).send({status:404, message:errr})
+                    })
             })
         }
-    });   
+        else return res.status(200).send({status:404, message: "got no error but something went wrong while decoding token"})
+    });
+
 });
 
-//ultimate endpoint for posting data to the server from visionWeb
-router.post("/", async (req:any, res:any, next:any)=>{
-    if(!req.body.user || !req.body.metadata || !req.body.token) return res.status(404).send({status: 404, message: "parameter(s) from the client side is missing."})
-
-    let q1 = req.body.user;
-    let q2 = req.body.metadata; //data would be in string form, will have to convert it into json object
-    let q3 = req.body.token || undefined;
-    
-            try{
-                q2 = JSON.parse(q2);
-                let setentry = new entry({
-                    user: q1,
-                    LastModified: `${new Date().toDateString()}, ${new Date().toTimeString()}`,
-                    metadata: q2
-                });
-
-                await entry.findOne({user: q1}).then(async (response:any)=>{
-
-                    if(!response){
-                       await setentry.save().then((results:any)=>{
-                            console.log("data saved");
-                            return res.send(results);
-                        }).catch((err:any)=>{
-                            res.json({status: 404, message: JSON.stringify(err.message)});
-                            console.log("ERR>>>(./routes/dataEntry.js))", err);
-                        })
-                    }
-                    
-                    else{
-                        console.log('User already exists');
-
-                        //will have to apply a manual json varifier coz we can't verify this part of the code by mongoose
-                        entry.findOneAndReplace({user: q1}, {
-                            user: q1,
-                            LastModified: `${new Date().toDateString()}, ${new Date().toTimeString()}`,
-                            metadata: q2
-                        })
-                            .then((innerResolve:any)=>{
-                            console.log(innerResolve);
-                        });
-                        
-                        return res.json({status: 404, message: "user overwritten"})
-                    }
-
-                })
-
-            }
-
-            catch(err){
-                console.log("internal server err", err)
-                return res.send({status: 404, message: "internal server err"})
-            }
-            
-    
-});
-
-router.post("/getdata", (req:any, res:any, next:any)=>{
-
-    if(req.body.token != process.env.getDbEntriesToken) return res.json({status: 404, message: "invalid/empty token"});
-    entry.findOne({user: req.body.user}).then((resolve:any)=>{
-        if(resolve) return res.json({status: 'ok', message: resolve});
-        return res.json({status: 404, message: "no data found with certain username"});
-    })
-    
-    
-});
 
 export {}
 module.exports = router

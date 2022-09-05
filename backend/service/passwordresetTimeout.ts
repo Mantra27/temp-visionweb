@@ -6,7 +6,6 @@ const isPasswordResetURLAlive = (req:any, res:any, next:any)=> {
     try{
         if(!req.body.password || !req.body.confirmPassword || !req.body.portalToken) return res.status(404).send({status:404, message:"missing param(s) from the client side"});
         const {password, confirmPassword, portalToken} = req.body;
-
         if(password != confirmPassword) return res.status(403).send({status:403, message:"password mismatch, session also expired"});
 
         //decoding using decypher to get email and username
@@ -20,8 +19,8 @@ const isPasswordResetURLAlive = (req:any, res:any, next:any)=> {
         const timeDiff = Number(new Date().getTime()) - Number(q1.t);
 
         //checking if the current session isnt timed out(a session lasts 10 mins);
-        if(timeDiff > 600000) return res.status(404).send({status:404, message:"password reset failed, reason for failure: Link Timeout"});
-        else{next();}
+        if(timeDiff > 600000) return res.status(404).send({status:404, message:"password reset failed, reason for failure: requested url timedout"});
+        else return next();
     }
     catch(error){
         console.log("!/service/passwordresetTimeout -line 21!", error);

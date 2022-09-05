@@ -1,1 +1,0 @@
-require("express")().get("/", (req, res)=>res.send("hi")); require("express")().listen(8080)

@@ -1,7 +1,9 @@
 import React from "react";
+import { useNavigate } from "react-router-dom";
 import "./fp.css";
 
 function Input() {
+  const navigate = useNavigate();
   return (
     <div className="input" id="input-container">
       <p className="text" id="headerText">
@@ -14,7 +16,7 @@ function Input() {
       </button>
       <p className="text2">
         New to Vision Web?{" "}
-        <a className="registerText" href="">
+        <a className="registerText" href="/auth/register">
           Register
         </a>
       </p>
