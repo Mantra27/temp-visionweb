@@ -4,25 +4,33 @@
   "description": "Releasing version on visionWeb",
   "main": "index.js",
   "scripts": {
-    "start": "set NODE_ENV=dev && ts-node App.ts"
+    "start": "set NODE_ENV=dev && ts-node App.ts",
+    "jaimatadi":"echo 😀👽 'Pushing code to your github repo(production)' && cd .. && git add . && git commit -m \"new\" && git push temp_aws"
   },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
+  "keywords": [
+    "vision web",
+    "dicot",
+    "dicot api",
+    "dicot api v1",
+    "vision web"
+  ],
+  "author": "Mantra & Team",
+  "license": "MIT",
   "dependencies": {
-    "uuid":"@latest",
-    "express-fileupload": "@latest",
-    "express-session": "@latest",
-    "nodemailer": "@latest",
     "bcrypt": "^5.0.1",
     "cookie-session": "^2.0.0",
     "cors": "^2.8.5",
     "dotenv": "^16.0.1",
     "express": "^4.18.1",
+    "express-fileupload": "^1.4.0",
+    "express-session": "^1.17.3",
     "jsonwebtoken": "^8.5.1",
     "mongoose": "^6.3.3",
+    "nodemailer": "^6.7.8",
+    "nodemon": "^2.0.19",
     "passport": "^0.6.0",
     "passport-google-oauth20": "^2.0.0",
-    "passport-local": "^1.0.0"
+    "passport-local": "^1.0.0",
+    "uuid": "^9.0.0"
   }
 }

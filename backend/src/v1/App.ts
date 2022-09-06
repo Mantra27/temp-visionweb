@@ -14,8 +14,8 @@ const passport = require("passport");
 const session = require("express-session");
 const { execSync } = require("child_process"); 
 const fileUpload = require('express-fileupload');
-
-require('dotenv').config({path: path.resolve(__dirname + '/.env')});
+                                                        //backend/src/v1/App.ts
+require('dotenv').config({path: path.resolve(__dirname + '/../../.env')});
 
 // middlwares/cors
 // app.use(express.static("/Users/surge/Desktop/code/dicot/v2/frontend/build"));
