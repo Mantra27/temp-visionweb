@@ -17,7 +17,7 @@ router.get("/", (req:any, res:any, next:any)=>{
 
 router.post("/update-data", (req:any, res:any)=>{
     const {token = null, metadata = null} = req.body;
-    if(!token || !metadata) return res.status(200).send({status:404, message:"a query(s) is missing from client, try checking your posting data with 2 params a TOKEN and A METADATA"})
+    if(!metadata) return res.status(200).send({status:404, message:"a query(s) is missing from client, try checking your posting data with 2 params a TOKEN and A METADATA"})
 })
 
 //this endpoint will be be the most spammed in the server, [users will check values updation for their projects from here]
@@ -44,12 +44,11 @@ router.post("/update-data", (req:any, res:any)=>{
 
 
 //this endpoint will be responsible for fetching data from the server using clients token to update the chart component
-router.post("/get-data", (req:any, res:any) => {
-    const {token, user} = req.body; 
+router.post("/get-data", require("../middlewares/apiTokenVerifier"), (req:any, res:any) => {
     //token will be unique uuidv4 graph id, user will be logged in user's token
-
-    if(!token || !user) return res.status(200).send({status:404, message:'invalid token/user logo-on from the client'});
-
+    const {token, secret} = req.body; 
+    const user = secret;
+    if(!token) return res.status(200).send({status:404, message:'invalid token w/ client'});
     jwt.verify(user, jwtKey, function(err:any, userData:any) {
         if(err) return res.status(200).send({status: 404, message: "error while decoding token(jwtkey)", error: JSON.stringify(err)});
         if(userData){
@@ -64,11 +63,11 @@ router.post("/get-data", (req:any, res:any) => {
             //   }
 
             const requesterName = userData.username;
-            Entry.findOne({"metadata.accessToken": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJQcm9qZWN0IjoiZmlyc3QiLCJ1dWlkIjoiNTgyMGRjMjMtNzdjYi00Y2RlLWJiMTYtNTQ2MTA4NWI4NTZjIiwiaWF0IjoxNjYyMDEwNDcwfQ.BnTlnL5FROlABEHoJBFvGiL1bIC2qfL7VSa-YlS98HE"}).then((Resign:any) => {
+            Entry.findOne({"metadata.accessToken": "token"}).then((Resign:any) => {
                 if(!Resign) return res.status(200).send({status:404, message:"something went wrong while searching graph-id"});
                 if(Resign.username != requesterName) return res.status(200).send({status:404, message:"youre doing something fishy"});
 
-                    const Payload = new Promise((PromiseResolve, PromiseReject ) => {
+                    const Payload = new Promise((PromiseResolve, PromiseReject) => {
                         let boolean = false;
                         Resign.metadata.forEach((element:any, index:any) => {
                             if(element.Project_id == token){
@@ -77,7 +76,8 @@ router.post("/get-data", (req:any, res:any) => {
                             }
                         })
                         if(!boolean) return PromiseReject("cannnot find certain project with token");
-                    })
+                    });
+
                     Payload.then((er:any) => {
                         if(!er.IsVerified) return res.status(200).send({status:404, message:"current project aint verified(connected) to any active instense"});
                         return res.status(200).send({status:200, message:"success", _values: er.Misc})
