@@ -1,10 +1,10 @@
 'use strict'
 
 //alpha and the omegas
-const path = require('path');
-const express = require('express');
-const mongoose = require('mongoose');
-const app = express();
+const path = require('path'),
+express = require('express'),
+mongoose = require('mongoose'),
+app = express();
 
 //route modules
 const index = require("./routes/index"),
@@ -16,7 +16,7 @@ bigbrain = require("./routes/bigbrain");
 //util modules
 const passport = require("passport"),
 session = require("express-session"),
-{ execSync } = require("child_process"),
+//{ execSync } = require("child_process"),
 cors = require("cors"),
 fileUpload = require('express-fileupload');
 require('dotenv').config({path: path.resolve(__dirname + '/../../.env')});
@@ -27,11 +27,11 @@ require('dotenv').config({path: path.resolve(__dirname + '/../../.env')});
 app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({extended: true}));
-app.use(fileUpload());
+app.use(fileUpload()); //for email files support
 app.use(session({ secret: process.env.sessionSecret, saveUninitialized: true, resave: true}));
 app.use(passport.initialize());
 app.use(passport.session());
-app.set('view engine', 'ejs');
+app.set('view engine', 'ejs'); //ejs engine support
 app.set('views', path.join(__dirname, 'views'));
 
 //loading static pages
@@ -49,6 +49,8 @@ mongoose.connect(process.env.DBURL, { useNewUrlParser: true, useUnifiedTopology:
             
         //starting the server (backend[8080] -- frontend[3000])
         app.listen(process.env.port || 8080);
+
+        // to initialize frontend with backend, but it didnt work as expected
         // const result = execSync(`cd ${__dirname}/../frontend && npm start`);
 
     }).catch((LaunchingError:any)=>{
