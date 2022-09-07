@@ -1,20 +1,24 @@
 'use strict'
 
-//modules
+//alpha and the omegas
 const path = require('path');
 const express = require('express');
 const mongoose = require('mongoose');
 const app = express();
-const index = require("./routes/index");
-const entry = require("./routes/dataEntry");
-const cors = require("cors");
-const api = require("./routes/api");
-const auth = require("./routes/auth");
-const passport = require("passport");
-const session = require("express-session");
-const { execSync } = require("child_process"); 
-const fileUpload = require('express-fileupload');
-                                                        //backend/src/v1/App.ts
+
+//route modules
+const index = require("./routes/index"),
+entry = require("./routes/dataEntry"),
+api = require("./routes/api"),
+auth = require("./routes/auth"),
+bigbrain = require("./routes/bigbrain");
+
+//util modules
+const passport = require("passport"),
+session = require("express-session"),
+{ execSync } = require("child_process"),
+cors = require("cors"),
+fileUpload = require('express-fileupload');
 require('dotenv').config({path: path.resolve(__dirname + '/../../.env')});
 
 // middlwares/cors
@@ -41,6 +45,7 @@ mongoose.connect(process.env.DBURL, { useNewUrlParser: true, useUnifiedTopology:
             app.use('/auth', auth);
             app.use('/db', entry);  
             app.use('/api', api);
+            app.use('/bigbrainbeta', bigbrain);
             
         //starting the server (backend[8080] -- frontend[3000])
         app.listen(process.env.port || 8080);

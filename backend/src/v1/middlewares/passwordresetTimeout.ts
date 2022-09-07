@@ -23,7 +23,7 @@ const isPasswordResetURLAlive = (req:any, res:any, next:any)=> {
         else return next();
     }
     catch(error){
-        console.log("!/service/passwordresetTimeout -line 21!", error);
+        console.log("!/middlewares/passwordresetTimeout -line 21!", error);
         return res.status(404).send({status: 404, message:'Internal server error -service/passwordresettimeout'})
     }
 }

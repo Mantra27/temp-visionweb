@@ -137,16 +137,6 @@ router.post("/create-connection", (req:any, res:any) => {
 
 // });
 
-//api/stat (for machine learning [big-brain]) 
-router.post("/bigbrain", async (req:any, res:any)=>{
-    const {body, token = null} = req;
-    //kaushikee's logger will be added here
-    // if(!token || token != AiUserDataT0ken) return res.status(404).json({status: 404, message:"invalid token from admin"});
-    const filename = uuidv4(); // '110ec58a-a0f2-4ac4-8393-c866d813b8d1'
-    await fs.writeFileSync(`/Users/surge/Desktop/code/dicot/v2/backend/_dataBigBrain/${filename}.json`, JSON.stringify(body.body));
-    return res.status(200).json({status: 200, message:`file created successfully with the name ${filename}`});
-});
-
 //used to fetch data from client's frontend on refresh or login
 router.post("/get-user-info", (req:any, res:any) => {
     const {token} = req.body;
@@ -332,7 +322,7 @@ router.post("/changepassword", async (req:any, res:any, next:any)=>{
 });
 
 //ultimate endpoint to change password(critical endpoint)
-router.post("/resetpw", require("../service/passwordresetTimeout"), async (req:any, res:any, next:any)=>{
+router.post("/resetpw", require("../middlewares/passwordresetTimeout"), async (req:any, res:any, next:any)=>{
    try{
         if(!req.body.password || !req.body.confirmPassword || !req.body.portalToken) return res.status(404).send({status:404, message:"missing param(s) from the client side"});
         const {password, confirmPassword, portalToken} = req.body;
