@@ -12,8 +12,8 @@ module.exports = async (req:any, res:any, next:any)=>{
     if(!secret) return res.status(200).send({status:404, message:"token missing from the clients side"});
         jwt.verify(secret, jwtKey, (err:any, success:any)=>{
             if(err) return res.status(200).send({status:500, message:"unable to verify token from client"});
-            req.body = success;
+            req.body = {secret:success, body:req.body};
             next();
-        })
+        });
 }
 export{}

@@ -22,11 +22,6 @@ const PYTBV_SCHEMA = new Schema({
         required: true
     },
 
-    VISON_C_CLIENT:{
-        type: String,
-        required: true
-    },
-
     uuid: {
         type: String,
         required: true

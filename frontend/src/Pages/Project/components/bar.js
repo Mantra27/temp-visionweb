@@ -22,13 +22,13 @@ const [data, setData] = useState({
       label: "Controller1_pv",
       data: [32.2, 31.3, 32.1, 31.7, 32, 31.4, 31.8],
       fill: true,
-      backgroundColor: "rgba(75,192,192,0.2)",
+      backgroundColor: "rgba(70,192,192,0.2)",
       borderColor: "rgba(75,192,192,1)"
     },
     {
       //this lable will be header name
       label: "Controller1_sv",
-      data: [40, 40, 40, 40, 40, 40],
+      data: [10, 20, 4, 32, 18, 42],
       fill: false,
       borderColor: "#742774"
     }

@@ -1,5 +1,4 @@
 const router = require('express').Router();
-const nodemailer = require('nodemailer');
 const { mailMan } = require('../utils/handler');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
@@ -11,7 +10,6 @@ const User = require("../models/user");
 const Entry = require("../models/entry");
 const crypt0 = require('crypto');
 const pwdreset = require('../models/pwdresetwh');
-const PASSWORD = require('../models/pwdresetwh');
 const ProjectVerify = require('../models/PVerification');
 const Logs = require('../models/clientLogs');
 require('dotenv').config({path: path.resolve(__dirname + '/../.env')});
@@ -20,7 +18,7 @@ require('dotenv').config({path: path.resolve(__dirname + '/../.env')});
 const decryptKey4ev = process.env.decryptKey4ev; //secret key to decode email verification urls
 const decryptKey4pwdrst = process.env.decryptKey4pwdrst; //secret key to decode password reset urls
 const ConnectionT0kenKey = process.env.ConnectionT0kenKey; //secret key for
-const AiUserDataT0ken = process.env.AiUserDataT0ken; //secret key for storing data for ai model
+// const AiUserDataT0ken = process.env.AiUserDataT0ken; //secret key for storing data for ai model
 const jwtKey = process.env.jwtkey; //secret key for all jwt token validation
 //--------------------------------------------------------------------------------------------------------
 
@@ -28,27 +26,49 @@ router.use(fileUpload());
 //endpoint to connect vision-web with vision-c
 
 //this endpoint is used to connect vision c to vision web(will return username in res)
-router.post("/create-connection", (req:any, res:any) => {
+router.post("/create-connection", async (req:any, res:any) => {
     const {token} = req.body;
     ProjectVerify.findOne({uuid: token}, (err:any, resolver:any)=>{
         if(err) return res.status(200).send({status: 404, message: 'something went wrong while checking for uuid in db', err: JSON.stringify(err)});
         //no verify request existed in db
-        if(!resolver) return res.status(200).send({status: 404, message:"no active uuid found in db"});
+        if(!resolver) return res.status(200).send({status: 404, message:"no project found with an active verify request, this occurs when project is already been verified or else project never did exist"});
         //this this point, if the instance is still alive, it means a verify request is already existed in db.
+        const newAccessToken = resolver.accessToken;
 
-        const newToken = resolver.accessToken;
-        ProjectVerify.delete({uuid: token}, (solve:any) => {
-            console.log({solve})
+        const FindProject_UUID = new Promise((aAR:any, bBJ:any)=>{
+            Entry.findOne({"metadata.Project_id": resolver.uuid}).then((e:any)=>{
+
+                    e.metadata.map((VALUE:any, KEY:any)=>{
+                        if(VALUE.Project_id == token){
+                            VALUE.IsVerified = 1;
+                            return aAR({success: true, data: VALUE});
+                        }
+                    });
+
+                e.save();
+                return bBJ({success: false, data:"no data found with assigned uuid"});
+            })
+            
         });
-        return res.status(200).send({status: 200, message: "success", token: newToken})
+
+            FindProject_UUID.then((fetched:any)=>{
+                ProjectVerify.findOneAndDelete({uuid: token}, (solve:any) => {
+                    return res.status(200).send({status: 200, message: "success", token: newAccessToken})
+                });
+            })
+                .catch((notFetched:any)=>{
+                    console.log(notFetched);
+                    return res.status(200).send({status: 404, message:JSON.stringify(notFetched)})
+                });
+                
     });
 
     //also regenerate token from here
-    jwt.verify(token, ConnectionT0kenKey, function(err:any, decoded:any) {
-        if(err) return res.status(200).send({status: 404, success: false, err: JSON.stringify(err)});
-        if(decoded) return res.status(200).send({status: 200, success:true, username: decoded.username, modejwtdata: decoded.mode});
-        else return res.status(200).send({status: 200, success:false});
-    })
+    // jwt.verify(token, ConnectionT0kenKey, function(err:any, decoded:any) {
+    //     if(err) return res.status(200).send({status: 404, success: false, err: JSON.stringify(err)});
+    //     if(decoded) return res.status(200).send({status: 200, success:true, username: decoded.username, modejwtdata: decoded.mode});
+    //     else return res.status(200).send({status: 200, success:false});
+    // })
 });
 
 // router.post("/update-data", (req:any, res:any) => {
@@ -151,7 +171,6 @@ router.post("/get-user-info", (req:any, res:any) => {
         }
     });   
 });
-
 
 router.get("/verifyme", (req:any, res:any, next:any)=>{
     try{
@@ -427,7 +446,6 @@ router.post("/addproject",(req:any, res:any) => {
         if(err) return res.status(200).send({status:404, message:"error while decoding your jwt token", err:JSON.stringify(err)});
         if(decoded){
             Entry.findOne({username: decoded.username}).then((Z:any) => {
-                const VISON_C_CLIENT = uuidv4();
                 if(!Z){
                     //user never created a project before, its his/her first
                     User.findOne({username: decoded.username}).then((draftusername:any) => {
@@ -438,7 +456,6 @@ router.post("/addproject",(req:any, res:any) => {
                         Entry({
                             user: email,
                             username: decoded.username,
-                            VISON_C_TOKEN: VISON_C_CLIENT,
                             LastModified: new Date().getTime(),
                             metadata:[
                                 {
@@ -459,13 +476,11 @@ router.post("/addproject",(req:any, res:any) => {
                             username: decoded.username,
                             email: email,
                             accessToken: accessTOKEN,
-                            VISON_C_CLIENT: VISON_C_CLIENT,
                             uuid: university,
                             LastModified: String(new Date().getTime())
                         });
 
                         DraftProjectVerification.save();
-
                         return res.status(200).send({status:200, message:"new project created successfully", uuid: university})
                     });
                 }
@@ -493,7 +508,6 @@ router.post("/addproject",(req:any, res:any) => {
                             Project_id: university,
                             username: decoded.username,
                             accessToken: accessTOKEN,
-                            VISON_C_CLIENT: VISON_C_CLIENT,
                             uuid: university,
                             LastModified: String(new Date().getTime())
                         });

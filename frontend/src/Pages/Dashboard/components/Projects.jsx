@@ -9,7 +9,7 @@ function Projects() {
   //initial sets
 
     useEffect(() =>{
-      axios.post("http://localhost:8080/api/getprojects", {token: localStorage.getItem("token")}).then(async (results)=>{
+      axios.post("http://192.168.220.32:8080/api/getprojects", {token: localStorage.getItem("token")}).then(async (results)=>{
       const draft = [];
       
       await results.data.message.metadata.map(async (value, key)=>{
@@ -21,7 +21,7 @@ function Projects() {
             projectOnlineStatus: value.IsVerified
         }
       });
-
+      console.log(draft)
         setProjectList(draft);
     });
     }, [])
@@ -32,7 +32,7 @@ function Projects() {
   const passdata = async (passedData) => {
     
     //update database first
-    return axios.post("http://localhost:8080/api/addproject", {token: localStorage.getItem("token"), projects: [{
+    return axios.post("http://192.168.220.32:8080/api/addproject", {token: localStorage.getItem("token"), projects: [{
 
       projectName: passedData.ptitle,
       projectOnlineStatus: false,
