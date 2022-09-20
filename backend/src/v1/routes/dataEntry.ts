@@ -23,6 +23,11 @@ router.get("/", (req:any, res:any, next:any)=>{
 //     return res.status(200).send("ok");
 // });
 
+router.post("/tud", (req:any, res:any, next:any)=>{
+    let {metadata} = req.body;
+    console.log(JSON.parse(metadata))
+});
+
 router.post("/update-data", (req:any, res:any)=>{
 
     const {token = null, metadata = null} = req.body;
@@ -32,13 +37,14 @@ router.post("/update-data", (req:any, res:any)=>{
         const onMatch = new Promise((onResolve, onReject)=>{
             found.metadata.map((value:any, key:Number)=>{
                 if(value.accessToken == token) return onResolve(value);
-            })
+            });
             onReject({message:"no active instance found with current accessToken"});
         })
         onMatch.then((promiseData:any)=>{
             //project gets a match,
 
-            console.log(promiseData)
+            console.log(promiseData);
+
             //variables mentioned below are for setting up Misc values in Metadata
             const receivedMetaData = JSON.parse(req.body.metadata)[0];
             const currentReceivedDevices = receivedMetaData.length;
@@ -53,7 +59,7 @@ router.post("/update-data", (req:any, res:any)=>{
                     if(junior.val.length > maxZerothCount) return maxZerothCount = junior.val.length;
                 })
             });
-
+            
             /*
                 side case would be that if a device is added after some time, its values will update with that corresponding time, 
                 means if another device from the same cluster is having past time, it will make a problem of indexing in timin,

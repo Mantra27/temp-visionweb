@@ -438,7 +438,7 @@ router.post("/addproject",(req:any, res:any) => {
 
     //side case handeling
     if(!token) return res.status(200).send({status:404, message:'invalid /addproject token from the client'});
-    if(!projects) return res.status(200).send({status:404, message:'invalid project property called from the client'});
+    if(!projects[0].projectName || !projects[0].location || !projects[0].desc) return res.status(200).send({status:404, message:'invalid project property called from the client'});
 
     //verifying to user's jwt token before he/she can access someone's projects and stuff
     jwt.verify(token, jwtKey, function(err:any, decoded:any) {
@@ -540,6 +540,37 @@ router.post("/getprojects", (req:any, res:any)=>{
     });    
 });
 
+router.post("/save-settings", require("../middlewares/apiTokenVerifier"), (req:any, res:any)=>{
+    //token will be verified in the middleware
+    //new body will be returned
+
+    const {body = null, graphId = null} = req.body;
+    if(!body || !graphId) return res.status(200).send({status: 404, message: "something went wrong while working with body || graphId from client's side"});
+
+});
+
+router.post("/get-settings", require("../middlewares/apiTokenVerifier"), (req:any, res:any)=>{
+    const {body} = req.body;
+
+    const FindProject_UUID = new Promise((aAR:any, bBJ:any)=>{
+        Entry.findOne({"metadata.Project_id": body.Project_id}).then((e:any)=>{
+
+            e.metadata.map((VALUE:any, KEY:any)=>{
+                if(VALUE.Project_id == req.body.graphId){
+                    VALUE.IsVerified = 1;
+                    return aAR({success: true, data: VALUE});
+                }
+            });
+        })
+    });
+
+        FindProject_UUID.then((fetched:any)=>{
+            console.log({fetched})
+        }).catch((CATCH:any)=>{
+            console.log({CATCH})
+        })
+});
+
 router.post("/logs", (req:any, res:any) => {
     const {username, email, role, project, details, ip} = req.body;
     const Time = new Date().getTime();
@@ -577,6 +608,7 @@ router.post("/feedback", async (req:any, res:any)=>{
     if(name.trim() == '' || email.trim() == '' || subject.trim() == '' || contact.trim() == ''  || feedback.trim() == '' ) return res.status(200).send({status: 404, message:"something is missing from input fields"});
     let filename = uuidv4(); 
 
+
     // console.log(req.files)
     // if(req.files){
     //     console.log("tehres a file!!")
@@ -597,7 +629,6 @@ router.post("/feedback", async (req:any, res:any)=>{
         await mailMan(admins, {subject:`Recieved new feeback!`, body:`name: ${name}\n from: ${email} \n subject: ${subject} \n ${contact} \n attachments:${attachedFile} \n Feedback:${feedback}`, attachments:{filename:filename, content: fs.createReadStream(path.join(__dirname,`/${filename}`))}});
         console.log(`feedback sent to ${admins} successfully`)
     });
-
     return res.status(200).send({status: 200, message:"notified admins!"});
     
 })

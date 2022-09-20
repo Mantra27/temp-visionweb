@@ -7,7 +7,7 @@ import { BiSearchAlt } from "react-icons/bi";
 import { FaFilter } from "react-icons/fa";
 import { BsPrinter } from "react-icons/bs";
 import ReactTable from "react-table";  
-import TABLE from "./table.jsx"
+import GR from "./gr";
 
 function TableData() {
   return (
@@ -15,7 +15,7 @@ function TableData() {
       <div className="data-container">
         <div className="table-content">
           <h2 style={{ marginTop: "2vh" }}>Header</h2>
-            <TABLE/>
+            <GR/>
           <h2>Footer</h2>
         </div>
       </div>
