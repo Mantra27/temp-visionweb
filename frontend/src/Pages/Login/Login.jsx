@@ -67,7 +67,7 @@ function Login() {
 
     e.preventDefault();
     try {
-      const url = "http://192.168.220.32:8080/auth/login";
+      const url = "http://localhost:8080/auth/login";
       const Data = await axios.post(url, data);
       if(!Data.data.token){
         toast({

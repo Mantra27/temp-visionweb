@@ -65,7 +65,7 @@ function App() {
             alignItems="center"
           >
             <Text className="nottext" fontSize={["5vw", "4vw", "2vw"]} w="70%">
-              Lorem ipsum
+              Boiler Reacher Max Temp
             </Text>
 
             <Box w="100%" display="flex" justifyContent="flex-end">
@@ -87,9 +87,8 @@ function App() {
             alignItems="center"
           >
             <Text className="nottext" fontSize={["5vw", "4vw", "2vw"]} w="70%">
-              Lorem ipsum
+              Boiler settings were changed by Admin
             </Text>
-
             <Box w="100%" display="flex" justifyContent="flex-end">
               <Text fontSize={["5vw", "4vw", "2vw"]}>4h</Text>
               <Button

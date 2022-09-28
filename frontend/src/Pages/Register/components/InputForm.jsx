@@ -35,7 +35,7 @@ const InputForm = () => {
     const handleSubmit = async (e) => {
       e.preventDefault();
       try {
-        const url = "http://localhost:8080/auth/register";
+        const url = "http://192.168.64.32:8080/auth/register";
         const Data = await
         axios.post(url, data);
         console.log(Data.data);
