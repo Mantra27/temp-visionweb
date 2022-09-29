@@ -41,7 +41,7 @@ function GraphData() {
   useEffect(() => {
     setInterval(() =>{
       console.log("request has been sent");
-      axios.post("http://localhost:8080/db/get-data", {
+      axios.post("http://15.207.232.194:8080/db/get-data", {
           token: ProjectID, 
           secret: localStorage.getItem("token"),
         }).then((resolve)=>{

@@ -23,7 +23,7 @@ function DrawerMenu(props) {
 
       if(!localStorage.getItem("username") || !localStorage.getItem("avatarURL")){
 
-        axios.post("http://localhost:8080/api/get-user-info", {token: localStorage.getItem("token"), requestedFor:"username"}).then(async (results)=>{
+        axios.post("http://15.207.232.194:8080/api/get-user-info", {token: localStorage.getItem("token"), requestedFor:"username"}).then(async (results)=>{
           if(results.data.status == 200){
             setName(results.data.data.username);
             setProfile(results.data.data.avatar);
