@@ -29,9 +29,9 @@ router.post("/tud", (req:any, res:any, next:any)=>{
 });
 
 router.post("/update-data", (req:any, res:any)=>{
-
-    const {token = null, metadata = null} = req.body;
+    let {token = null, metadata = null} = req.body;
     if(!metadata || !token) return res.status(200).send({status:404, message:"a query(s) is missing from client, try checking your posting data with 2 params a TOKEN and A METADATA"})
+    metadata = JSON.parse(metadata)
     Entry.findOne({"metadata.accessToken": token}).then((found:any) => {
         if(!found) return res.status(200).send({status:404, message:"no active instance found with mentioned token"});
         const onMatch = new Promise((onResolve, onReject)=>{
@@ -43,39 +43,42 @@ router.post("/update-data", (req:any, res:any)=>{
         onMatch.then((promiseData:any)=>{
             //project gets a match,
 
-            console.log(promiseData);
+            let newDataFromClient = metadata[0].Misc.Devices; //array of devices from api req
+            let newEntryTime = new Date().getTime();
 
-            //variables mentioned below are for setting up Misc values in Metadata
-            const receivedMetaData = JSON.parse(req.body.metadata)[0];
-            const currentReceivedDevices = receivedMetaData.length;
-            const newDraftedMetadata = null;
-            const CurrentTime = new Date().getTime();
+            if(promiseData.Misc[0].Devices.length == 0){
+                console.log('==========================')
+                newDataFromClient.map(async (value:any, key:any)=>{
+                    promiseData.Misc[0].Devices[key] = {Header: value.Header, time: newEntryTime, val:{val:2, time: newEntryTime}}
+                });
+                found.save();
+            }
 
-            let maxZerothCount = 0;
+            else{
 
-            //function mentioned below is for getting highest number of zeroth counter
-            found.metadata.map((value:any, key:Number)=>{
-                value.Misc.Devices.map((junior:any, senior:any)=>{
-                    if(junior.val.length > maxZerothCount) return maxZerothCount = junior.val.length;
-                })
-            });
-            
-            /*
-                side case would be that if a device is added after some time, its values will update with that corresponding time, 
-                means if another device from the same cluster is having past time, it will make a problem of indexing in timin,
-                SOLUTION- to solve this problem we have to get the max number of a project's values and will make rest of the zeros
+                newDataFromClient.map(async (value:any, key:any)=>{
+                    promiseData.Misc[0].Devices[key].val.push(value.val);
+                });
 
-                the component and the variable mentioned above will get the the max NUMBER of a projects value upgrades
-            */
+                newDataFromClient.map(async (value:any, key:any)=>{
+                    let shouldIncludeIt = true;
+                    promiseData.Misc[0].Devices.map((V:any, K:any)=>{
+                        if(value.Header == V.Header){
+                            shouldIncludeIt = false;
+                        }
+                    })
 
-            console.log(receivedMetaData.Misc.Devices);
+                    if(shouldIncludeIt){    
+                        promiseData.Misc[0].Devices[ promiseData.Misc[0].Devices.length] = await {Header: value.Header, time: newEntryTime, val: {val: 2, time: newEntryTime}}
+                        
+                    }
+                });
+                found.save()
+                console.log(promiseData.Misc[0].Devices)
+            }
 
-            // receivedMetaData.map((CV:any, key:Number)=>{
+            return res.send("ok");
 
-            // });
-
-            console.log(promiseData);
-            return res.send("ok")
         }).catch((E:any)=>{
             console.log({E});
             return res.status(200).send({status: 404, message:E});
@@ -111,7 +114,6 @@ router.post("/get-data", require("../middlewares/apiTokenVerifier"), (req:any, r
 
     //token will be unique uuidv4 graph id, secret will be logged in user's token from middleware
     //actually token will also be required to middleware(apiTOkenVerifier)
-
     const {body, secret} = req.body,
     token = body.token;
     const userData = secret;

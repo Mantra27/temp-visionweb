@@ -12,6 +12,9 @@ import axios from "axios";
 function GraphData() {
   const [searchParams, setSearchParams] = useSearchParams();
   const ProjectID = searchParams.get("graphId");
+
+  const cycles = 0;
+
   const [content, setContent] = useState({
     //lables will be times values
     labels: ["0.0.0.0", "0.0.0.1"],
@@ -33,20 +36,38 @@ function GraphData() {
       }
     ]
   });
-  useEffect(() => {
-      axios.post("http://localhost:8080/api/get-data", {
-          token: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6Im1hbnRyYSIsImVtYWlsIjoiZ29oaWxtYW50cmFAZ21haWwuY29tIiwidGltZSI6MTY2MTMzNzU2OTY5OCwiaWF0IjoxNjYxMzM3NTY5fQ.U4ayvh7LlK2XOmQ5JTLnJjSyzD7uQ8rnbrytcXMjcig' 
-        }).then((resolve)=>{
-            setContent(resolve.data.data.metadata[0].Misc)
-      });
-  }, [])
+
+
   useEffect(() => {
     setInterval(() =>{
       console.log("request has been sent");
-      axios.post("http://localhost:8080/api/get-data", {
-          token: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6Im1hbnRyYSIsImVtYWlsIjoiZ29oaWxtYW50cmFAZ21haWwuY29tIiwidGltZSI6MTY2MTMzNzU2OTY5OCwiaWF0IjoxNjYxMzM3NTY5fQ.U4ayvh7LlK2XOmQ5JTLnJjSyzD7uQ8rnbrytcXMjcig' 
+      axios.post("http://localhost:8080/db/get-data", {
+          token: ProjectID, 
+          secret: localStorage.getItem("token"),
         }).then((resolve)=>{
-            setContent(resolve.data.data.metadata[0].Misc)
+
+            console.log(resolve.data._values[0].Devices);
+
+            let HEADERS = [];
+            let VALUES = [];
+
+            resolve.data._values[0].Devices.map(async (value, key)=>{
+              HEADERS[HEADERS.length] = value.Header;
+              value.val.map((EE, KEY)=>{
+                value.val[KEY] = parseInt(EE);
+              });
+              VALUES[VALUES.length] = {
+                //this lable will be header name
+                label: value.HEADERS,
+                data: value.val,
+                fill: true,
+                backgroundColor: "rgba(70,192,192,0.2)",
+                borderColor: "rgba(75,192,192,1)"
+              };
+
+              setContent({labels: HEADERS, datasets:VALUES})
+            })
+            console.log(HEADERS, VALUES)
       });
   
     }, 5000)

@@ -57,7 +57,14 @@ const metadataschema = mongoose.Schema({
             Devices: [{
                 Header: String,
                 val: [{
-                    type: Object,
+                    val: {
+                        type: Object,
+                        required: true
+                    },
+                    time:{
+                        type: Object,
+                        required: true
+                    }
                 }]
             }]
 

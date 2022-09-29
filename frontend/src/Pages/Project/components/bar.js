@@ -13,6 +13,12 @@ const random = (min, max) => Math.floor(Math.random() * (max - min)) + min;
 let pvset = datasets[random(0, 6)];
 let labels = ['14:31:18', '14:31:43', '14:32:08', '14:31:33', '14:31:58', '14:32:23']
 console.log(labels);
+console.log(PROPS);
+
+setTimeout(()=>{
+  setData(PROPS)
+}, 700)
+
 const [data, setData] = useState({
   //lables will be times values
   labels: labels,
@@ -34,6 +40,7 @@ const [data, setData] = useState({
     }
   ]
 });
+
 let time = [`${new Date().getHours()}:${new Date().getMinutes()}:${new Date().getSeconds()}`]
 
 

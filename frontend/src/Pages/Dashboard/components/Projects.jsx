@@ -9,7 +9,7 @@ function Projects() {
   //initial sets
 
     useEffect(() =>{
-      axios.post("http://192.168.64.32:8080/api/getprojects", {token: localStorage.getItem("token")}).then(async (results)=>{
+      axios.post("http://localhost:8080/api/getprojects", {token: localStorage.getItem("token")}).then(async (results)=>{
       const draft = [];
       
       await results.data.message.metadata.map(async (value, key)=>{

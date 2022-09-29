@@ -9,26 +9,6 @@ import TableData from "./components/TableData";
 import axios from "axios";
 
 function Project() {
-  console.log("hi")
-  // const [searchParams, setSearchParams] = useSearchParams();
-  // const ProjectID = searchParams.get("graphId");
-
-  // const cycles = 0;
-
-  // useEffect(() => {
-  //   setInterval(() =>{
-  //     console.log("request has been sent");
-  //     axios.post("http://localhost:8080/db/get-values", {
-  //         token: localStorage.getItem("token"), 
-  //         projectId: ProjectID,
-  //       }).then((resolve)=>{
-
-  //           console.log(resolve.data.data)
-
-  //     });
-  
-  //   }, 5000)
-  // }, [])
 
   const navigate = useNavigate();
 
