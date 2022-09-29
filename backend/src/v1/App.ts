@@ -10,10 +10,10 @@ app = express();
 const index = require("./routes/index"),
 entry = require("./routes/dataEntry"),
 api = require("./routes/api"),
-auth = require("./routes/auth"),
-bigbrain = require("./routes/bigbrain"),
-dangerZone = require("./routes/💀zone"),
-Payments = require("./routes/payments")
+auth = require("./routes/auth")
+// bigbrain = require("./routes/bigbrain"),
+// dangerZone = require("./routes/💀zone"),
+// Payments = require("./routes/payments")
 
 //util modules
 const passport = require("passport"),
@@ -47,9 +47,9 @@ mongoose.connect(process.env.DBURL, { useNewUrlParser: true, useUnifiedTopology:
             app.use('/auth', auth);
             app.use('/db', entry);  
             app.use('/api', api);
-            app.use('/bigbrainbeta', bigbrain);
-            app.use('/dangerzone', dangerZone)
-            app.use('/payment', Payments)
+            // app.use('/bigbrainbeta', bigbrain);
+            // app.use('/dangerzone', dangerZone)
+            // app.use('/payment', Payments)
             
         //starting the server (backend[8080] -- frontend[3000])
         app.listen(process.env.port || 8080);
