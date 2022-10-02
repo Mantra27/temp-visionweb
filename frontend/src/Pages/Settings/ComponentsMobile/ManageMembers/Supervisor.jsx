@@ -9,27 +9,45 @@ function Supervisor({ setPage }) {
       <h1>Role Permissions</h1>
       <div className="security-item security-switch">
         <label>Edit Connection Settings</label>
-        <Switch className="switch" />
+           <label className="switch">
+            <input type="checkbox"/>
+              <span className="slider"></span>
+          </label>
       </div>
       <div className="security-item security-switch">
         <label>Edit Device Setting</label>
-        <Switch className="switch" />
+           <label className="switch">
+            <input type="checkbox"/>
+              <span className="slider"></span>
+          </label>
       </div>
       <div className="security-item security-switch">
         <label>Manipulate Devices</label>
-        <Switch className="switch" />
+           <label className="switch">
+            <input type="checkbox"/>
+              <span className="slider"></span>
+          </label>
       </div>
       <div className="security-item security-switch">
         <label>View and Manipulate Data</label>
-        <Switch className="switch" />
+           <label className="switch">
+            <input type="checkbox"/>
+              <span className="slider"></span>
+          </label>
       </div>
       <div className="security-item security-switch">
         <label>Export and Prints</label>
-        <Switch className="switch" />
+           <label className="switch">
+            <input type="checkbox"/>
+              <span className="slider"></span>
+          </label>
       </div>
       <div className="security-item security-switch">
         <label>Danger Zone</label>
-        <Switch className="switch" />
+           <label className="switch">
+            <input type="checkbox"/>
+              <span className="slider"></span>
+          </label>
       </div>
       <input
         className="discard-changes"

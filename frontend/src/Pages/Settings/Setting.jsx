@@ -1,12 +1,14 @@
 import React from "react";
 import { Tabs, TabList, TabPanels, Tab, TabPanel } from "@chakra-ui/react";
-
+import { useSearchParams } from "react-router-dom";
 import Connection from "./Components/Connection";
 import ManageMembers from "./Components/ManageMembers";
 import SecurityAndData from "./Components/SecurityAndData";
 import DangerZone from "./Components/DangerZone";
+import { useNavigate } from "react-router-dom";
 
 function Setting() {
+
   return (
     
     <div style={{ marginTop: "10vh" }}>

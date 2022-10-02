@@ -9,6 +9,9 @@ import Projects from "./components/Projects";
 function App(props) {
   const navigate = useNavigate();
 
+  localStorage.setItem("parchuranheader", "Header")
+  localStorage.setItem("parchuranfooter", "Footer")
+
 //   const googlesignincheck = async (e) => {
 
 //     const url = "http://localhost:8080/wh/setToken";

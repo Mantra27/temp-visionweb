@@ -63,14 +63,16 @@ function DrawerMenu(props) {
                 props.onClose();
               }}
             />
-            <AiOutlineSetting
+            
+            {/* <AiOutlineSetting
               className="drawer-icon"
               onClick={(e) => {
                 e.preventDefault();
                 navigate("/settings");
                 props.onClose();
               }}
-            />
+            /> */}
+
             <HiOutlineLogout
               className="drawer-icon"
               onClick={async (e) => {
@@ -128,7 +130,11 @@ function DrawerMenu(props) {
             <div className="drawer-nav-item-icon">
               <BsFillQuestionCircleFill />
             </div>
-            <div className="drawer-nav-item-text">FAQ</div>
+            <div className="drawer-nav-item-text" onClick={(e) => {
+              e.preventDefault();
+              navigate("/faq");
+              props.onClose();
+            }}>FAQ</div>
           </div>
           <div
             className="drawer-nav-item"

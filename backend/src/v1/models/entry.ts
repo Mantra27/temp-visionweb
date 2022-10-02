@@ -59,11 +59,9 @@ const metadataschema = mongoose.Schema({
                 val: [{
                     val: {
                         type: Object,
-                        required: true
                     },
                     time:{
                         type: Object,
-                        required: true
                     }
                 }]
             }]

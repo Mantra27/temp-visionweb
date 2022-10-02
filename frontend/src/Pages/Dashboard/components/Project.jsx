@@ -1,7 +1,7 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
 import { useFormControlStyles, useToast } from "@chakra-ui/react";
-
+import { AiOutlineSetting } from "react-icons/ai";
 
 function Project(props) {
   const toast = useToast();
@@ -9,6 +9,22 @@ function Project(props) {
   
   return (
     <div className="project">
+      <AiOutlineSetting
+      style={{
+        marginTop:"10px",
+        height:"26px",
+        width: "760px",
+        clear:"both",
+        float:"left",
+      }}
+      data-uniqueprojectid={props.uniqueProjectId}
+              className="settings-icon"
+              onClick={(e) => {
+                e.preventDefault();
+                navigate(`settings?project=${e.target.dataset.uniqueprojectid ?? "nullish"}`);
+                props.onClose();
+              }}
+      />
       <div className="project-details">
         <p>
           <strong>Project Name:</strong> {props.projectName}
@@ -52,7 +68,7 @@ function Project(props) {
           // }
           //else{
             e.preventDefault();
-            navigate(`/project?graphId=${e.target.dataset.uniqueprojectid ?? "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6Im1hbnRyYSIsImVtYWlsIjoiZ29oaWxtYW50cmFAZ21haWwuY29tIiwidGltZSI6MTY2MTMzNzU2OTY5OCwiaWF0IjoxNjYxMzM3NTY5fQ.U4ayvh7LlK2XOmQ5JTLnJjSyzD7uQ8rnbrytcXMjcig"}`);
+            navigate(`/project?graphId=${e.target.dataset.uniqueprojectid ?? "null"}`);
           //}
         }}
       >

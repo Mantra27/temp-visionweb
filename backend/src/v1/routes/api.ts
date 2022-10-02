@@ -551,24 +551,33 @@ router.post("/save-settings", require("../middlewares/apiTokenVerifier"), (req:a
 
 router.post("/get-settings", require("../middlewares/apiTokenVerifier"), (req:any, res:any)=>{
     const {body} = req.body;
-
-    const FindProject_UUID = new Promise((aAR:any, bBJ:any)=>{
-        Entry.findOne({"metadata.Project_id": body.Project_id}).then((e:any)=>{
-
-            e.metadata.map((VALUE:any, KEY:any)=>{
-                if(VALUE.Project_id == req.body.graphId){
-                    VALUE.IsVerified = 1;
+    const projectId = body.projectId
+    const FindProject_UUID = new Promise((aAR:any, notresolve:any)=>{
+        Entry.findOne({"metadata.uuid": projectId}).then(async (e:any)=>{
+            await e.metadata.map((VALUE:any, KEY:any)=>{
+                if(VALUE.Project_id == projectId){
+                    console.log("ll")
                     return aAR({success: true, data: VALUE});
                 }
             });
+            notresolve({success: false, data: "found nothing but two peanuts, may happend beacause of invalid projectId or something else"});
         })
     });
 
         FindProject_UUID.then((fetched:any)=>{
             console.log({fetched})
+            return res.status(200).send({status: 200, message: fetched})
         }).catch((CATCH:any)=>{
             console.log({CATCH})
+            return res.status(200).send({status: 404, message: CATCH})
         })
+});
+
+router.post("/configure-project", require("../middlewares/apiTokenVerifier"), (req:any, res:any)=>{
+    const {body} = req.body;
+    const {header, footer, ProjectID, colorPallete, unit} = body;
+    console.log(header, footer)
+    //save current header and footer into db
 });
 
 router.post("/logs", (req:any, res:any) => {

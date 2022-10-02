@@ -2,8 +2,8 @@ import React from "react";
 import { BsArrowLeftCircle } from "react-icons/bs";
 import { useNavigate } from "react-router-dom";
 import logo from "../../../assets/Logo.svg";
-
-function Navbar() {
+import DrawerMenu from "../../../Drawer";
+function Navbar(props) {
   const navigate = useNavigate();
   return (
     <nav id="navbar">
@@ -15,8 +15,15 @@ function Navbar() {
             navigate("/");
           }}
         />
-        <img className="logo-settings" src={logo} alt="..." />
+        <img className="logo-dash" src={logo} alt="..." 
+              onClick={(e) => {
+                e.preventDefault();
+                navigate("/");
+                props.onClose();
+              }}/>
       </div>
+      <DrawerMenu onClose={props.onClose} isOpen={props.isOpen} />
+      <div className="nav-back"></div>
     </nav>
   );
 }

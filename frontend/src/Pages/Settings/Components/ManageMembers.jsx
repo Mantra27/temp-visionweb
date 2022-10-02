@@ -18,80 +18,134 @@ function ManageMembers() {
           <tbody>
             <tr>
               <th className="rp">Role Permissions</th>
-              <th className="role">Admin</th>
-              <th className="role">Supervisor</th>
-              <th className="role">Operator</th>
+              <th className="role admin">Admin</th>
+              <th className="role supervisor">Supervisor</th>
+              <th className="role operator">Operator</th>
             </tr>
             <tr>
               <td className="permission">Edit Connection Setting</td>
               <td>
-                <Switch />
+                  <label className="switch">
+            <input type="checkbox"/>
+              <span className="slider"></span>
+          </label>
               </td>
               <td>
-                <Switch />
+                  <label className="switch">
+            <input type="checkbox"/>
+              <span className="slider"></span>
+          </label>
               </td>
               <td>
-                <Switch />
+                  <label className="switch">
+            <input type="checkbox"/>
+              <span className="slider"></span>
+          </label>
               </td>
             </tr>
             <tr>
               <td className="permission">Edit Device Setting</td>
               <td>
-                <Switch />
+                  <label className="switch">
+            <input type="checkbox"/>
+              <span className="slider"></span>
+          </label>
               </td>
               <td>
-                <Switch />
+                  <label className="switch">
+            <input type="checkbox"/>
+              <span className="slider"></span>
+          </label>
               </td>
               <td>
-                <Switch />
+                  <label className="switch">
+            <input type="checkbox"/>
+              <span className="slider"></span>
+          </label>
               </td>
             </tr>
             <tr>
               <td className="permission">Manipulate Devices</td>
               <td>
-                <Switch />
+                  <label className="switch">
+            <input type="checkbox"/>
+              <span className="slider"></span>
+          </label>
               </td>
               <td>
-                <Switch />
+                  <label className="switch">
+            <input type="checkbox"/>
+              <span className="slider"></span>
+          </label>
               </td>
               <td>
-                <Switch />
+                  <label className="switch">
+            <input type="checkbox"/>
+              <span className="slider"></span>
+          </label>
               </td>
             </tr>
             <tr>
               <td className="permission">View and Manipulate Devices</td>
               <td>
-                <Switch />
+                  <label className="switch">
+            <input type="checkbox"/>
+              <span className="slider"></span>
+          </label>
               </td>
               <td>
-                <Switch />
+                  <label className="switch">
+            <input type="checkbox"/>
+              <span className="slider"></span>
+          </label>
               </td>
               <td>
-                <Switch />
+                  <label className="switch">
+            <input type="checkbox"/>
+              <span className="slider"></span>
+          </label>
               </td>
             </tr>
             <tr>
               <td className="permission">Export and Prints</td>
               <td>
-                <Switch />
+                  <label className="switch">
+            <input type="checkbox"/>
+              <span className="slider"></span>
+          </label>
               </td>
               <td>
-                <Switch />
+                  <label className="switch">
+            <input type="checkbox"/>
+              <span className="slider"></span>
+          </label>
               </td>
               <td>
-                <Switch />
+                  <label className="switch">
+            <input type="checkbox"/>
+              <span className="slider"></span>
+          </label>
               </td>
             </tr>
             <tr className="last">
               <td className="permission">Danger Zone</td>
               <td>
-                <Switch />
+                  <label className="switch">
+            <input type="checkbox"/>
+              <span className="slider"></span>
+          </label>
               </td>
               <td>
-                <Switch />
+                  <label className="switch">
+            <input type="checkbox"/>
+              <span className="slider"></span>
+          </label>
               </td>
               <td>
-                <Switch />
+                  <label className="switch">
+            <input type="checkbox"/>
+              <span className="slider"></span>
+          </label>
               </td>
             </tr>
           </tbody>

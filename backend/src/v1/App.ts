@@ -29,7 +29,7 @@ require('dotenv').config({path: path.resolve(__dirname + '/../../.env')});
 app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({extended: true}));
-app.use(fileUpload()); //for email files support
+app.use(fileUpload()); //for email files suppor
 app.use(session({ secret: process.env.sessionSecret, saveUninitialized: true, resave: true}));
 app.use(passport.initialize());
 app.use(passport.session());
@@ -53,6 +53,7 @@ mongoose.connect(process.env.DBURL, { useNewUrlParser: true, useUnifiedTopology:
             
         //starting the server (backend[8080] -- frontend[3000])
         app.listen(process.env.port || 8080);
+
 
         // to initialize frontend with backend, but it didnt work as expected
         // const result = execSync(`cd ${__dirname}/../frontend && npm start`);

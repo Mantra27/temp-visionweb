@@ -8,15 +8,17 @@ import { FaFilter } from "react-icons/fa";
 import { BsPrinter } from "react-icons/bs";
 import ReactTable from "react-table";  
 import GR from "./gr";
+import {ReactHTMLElement, useState, useEffect} from "react";
 
 function TableData() {
+
   return (
     <>
       <div className="data-container">
         <div className="table-content">
-          <h2 style={{ marginTop: "2vh" }}>Header</h2>
+          <h2 style={{ marginTop: "2vh" }}>{localStorage.getItem("parchuranheader")}</h2>
             <GR/>
-          <h2>Footer</h2>
+          <h2>{localStorage.getItem("parchuranfooter")}</h2>
         </div>
       </div>
 

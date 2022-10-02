@@ -12,21 +12,13 @@ import NavbarMobile from "./ComponentsMobile/NavbarMobile";
 import Admin from "./ComponentsMobile/ManageMembers/Admin";
 import Supervisor from "./ComponentsMobile/ManageMembers/Supervisor";
 import Operator from "./ComponentsMobile/ManageMembers/Operator";
-import { useNavigate, useSearchParams } from "react-router-dom";
-
 const Setting = lazy(() => import("./Setting"));
 const SettingMobile = lazy(() => import("./SettingMobile"));
 
 function App() {
-
-  const [searchParams, setSearchParams] = useSearchParams();
-  const ProjectID = searchParams.get("graphId");
-
   React.useLayoutEffect(() => {
     document.title = "Settings";
   }, []);
-   
-  const [graphId, setGraphId] = useState(ProjectID);
   const [page, setpage] = useState("");
 
   return (

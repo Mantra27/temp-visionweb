@@ -50,15 +50,24 @@ function SecurityAndData() {
 
         <div className="security-item security-switch">
           <label>Redundancy</label>
-          <Switch className="switch" />
+          <label className="switch">
+            <input type="checkbox" />
+            <span className="slider"></span>
+          </label>
         </div>
         <div className="security-item security-switch">
           <label>Data Collection by DICOT</label>
-          <Switch className="switch" />
+          <label className="switch">
+            <input type="checkbox" />
+            <span className="slider"></span>
+          </label>
         </div>
         <div className="security-item security-switch">
           <label>VPN</label>
-          <Switch className="switch" />
+          <label className="switch">
+            <input type="checkbox" />
+            <span className="slider"></span>
+          </label>
         </div>
         <Accordion className="security-item" allowMultiple>
           <AccordionItem>
@@ -73,7 +82,10 @@ function SecurityAndData() {
             <AccordionPanel pb={4}>
               <div className="log-item">
                 <p>Enable All Logs</p>
-                <Switch className="switch" />
+                <label className="switch">
+                  <input type="checkbox" />
+                  <span className="slider"></span>
+                </label>
               </div>
               <div className="log-item">
                 <p>Connection Settings</p>

@@ -6,18 +6,18 @@ import {registerables} from 'chart.js';
 import axios from "axios";
 
 const BarChart = (PROPS) => {
+
 //   let [Label, setLabel] = useState([0]);
 //   let [Dataset, setDataset] = useState([0]);
+
 const datasets = [31.8, 32, 33, 31.7, 31.1, 30.3, 32.2];
 const random = (min, max) => Math.floor(Math.random() * (max - min)) + min;
 let pvset = datasets[random(0, 6)];
 let labels = ['14:31:18', '14:31:43', '14:32:08', '14:31:33', '14:31:58', '14:32:23']
-console.log(labels);
-console.log(PROPS);
-
 setTimeout(()=>{
-  setData(PROPS)
+
 }, 700)
+
 
 const [data, setData] = useState({
   //lables will be times values
@@ -115,7 +115,7 @@ let time = [`${new Date().getHours()}:${new Date().getMinutes()}:${new Date().ge
 // }, [PROPS])
   return (
 
-      <Line
+      <Line id='grid'
         data={data}
         width="70%"
         height="40%"

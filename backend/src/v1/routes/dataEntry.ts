@@ -25,7 +25,6 @@ router.get("/", (req:any, res:any, next:any)=>{
 
 router.post("/tud", (req:any, res:any, next:any)=>{
     let {metadata} = req.body;
-    console.log(JSON.parse(metadata))
 });
 
 router.post("/update-data", (req:any, res:any)=>{
@@ -33,6 +32,7 @@ router.post("/update-data", (req:any, res:any)=>{
     if(!metadata || !token) return res.status(200).send({status:404, message:"a query(s) is missing from client, try checking your posting data with 2 params a TOKEN and A METADATA"})
     metadata = JSON.parse(metadata)
     Entry.findOne({"metadata.accessToken": token}).then((found:any) => {
+        
         if(!found) return res.status(200).send({status:404, message:"no active instance found with mentioned token"});
         const onMatch = new Promise((onResolve, onReject)=>{
             found.metadata.map((value:any, key:Number)=>{
@@ -40,24 +40,29 @@ router.post("/update-data", (req:any, res:any)=>{
             });
             onReject({message:"no active instance found with current accessToken"});
         })
+
         onMatch.then((promiseData:any)=>{
             //project gets a match,
 
             let newDataFromClient = metadata[0].Misc.Devices; //array of devices from api req
             let newEntryTime = new Date().getTime();
 
+
+            //first entry
             if(promiseData.Misc[0].Devices.length == 0){
-                console.log('==========================')
+
                 newDataFromClient.map(async (value:any, key:any)=>{
-                    promiseData.Misc[0].Devices[key] = {Header: value.Header, time: newEntryTime, val:{val:2, time: newEntryTime}}
+                    promiseData.Misc[0].Devices[key] = {Header: value.Header, val:{val:value.val, time: newEntryTime}}
                 });
+
                 found.save();
             }
 
             else{
 
                 newDataFromClient.map(async (value:any, key:any)=>{
-                    promiseData.Misc[0].Devices[key].val.push(value.val);
+                    value.val = parseInt(value.val);
+                    promiseData.Misc[0].Devices[key].val.push({Header: value.Header, val:{val:value.val, time: newEntryTime}})
                 });
 
                 newDataFromClient.map(async (value:any, key:any)=>{
@@ -74,17 +79,21 @@ router.post("/update-data", (req:any, res:any)=>{
                     }
                 });
                 found.save()
-                console.log(promiseData.Misc[0].Devices)
             }
 
             return res.send("ok");
 
         }).catch((E:any)=>{
-            console.log({E});
             return res.status(200).send({status: 404, message:E});
         })
     })
-})
+});
+
+router.post("/invite-members", require("../middlewares/apiTokenVerifier"), (req:any, res:any)=>{
+    const {body} = req.body;
+    const {email, project_id} = body;
+
+});
 
 //this endpoint will be be the most spammed in the server, [users will check values updation for their projects from here]
 // router.post("/get-values", (req:any, res:any, next:any)=>{
@@ -114,10 +123,11 @@ router.post("/get-data", require("../middlewares/apiTokenVerifier"), (req:any, r
 
     //token will be unique uuidv4 graph id, secret will be logged in user's token from middleware
     //actually token will also be required to middleware(apiTOkenVerifier)
+
     const {body, secret} = req.body,
     token = body.token;
     const userData = secret;
-    if(!token) return res.status(200).send({status:404, message:'invalid token w/ client'});
+    if(!token) return res.status(200).send({status:404, message:'invalid or null token w/ client'});
         if(userData){
 
             // {
@@ -130,9 +140,7 @@ router.post("/get-data", require("../middlewares/apiTokenVerifier"), (req:any, r
             //   }
 
             const requesterName = userData.username;
-            console.log({token});
             Entry.findOne({"metadata.Project_id": token}).then((Resign:any) => {
-                console.log({Resign});
                 if(!Resign) return res.status(200).send({status:404, message:"invalid/null/undefined graph-id, please contact the administrator ()", _requester: userData});
                 if(Resign.username != requesterName) return res.status(200).send({status:404, message:"something went wrong [code: de066]"});
 

@@ -13,6 +13,7 @@ import Project from "./Pages/Project/Project";
 import { useDisclosure } from "@chakra-ui/react";
 import Setting from "./Pages/Settings/Setting";
 import FP from "./Pages/fp/App";
+import FAQs from "./Pages/FAQs/FAQPage"
 
 function App() {
   const { isOpen, onOpen, onClose } = useDisclosure();
@@ -41,6 +42,7 @@ function App() {
       />
       <Route path="/notifications" exact element={<Notifications />} />
       <Route path="/profile" exact element={<Profile />} />
+      <Route path="/faq" exact element={<FAQs />} />
       <Route path="/project" exact element={<Project />} />
       <Route path="/settings/*" exact element={<Settings />} />
     </Routes>

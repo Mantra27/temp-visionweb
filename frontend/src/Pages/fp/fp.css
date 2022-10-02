@@ -4,7 +4,7 @@
 }
 
 html {
-  background: #f3faef;
+  background: white;
 
   width: 100%;
   height: 100%;
@@ -24,10 +24,17 @@ html {
 #input-container {
   max-width: 60rem;
 }
+
 #headerText {
   text-align: center;
+  position: relative;
+  bottom: 1rem;
 }
+
 .input {
+  display: inline-block;
+  justify-content: center;
+  align-items: center;
   position: relative;
   width: 750px;
   height: 300px;
@@ -43,8 +50,8 @@ html {
 .text {
   position: static;
   height: 42px;
-  left: 468px;
-  top: 538px;
+  left: -20px;
+  top: 206px;
   padding-top: 36px;
 
   font-family: "Roboto";
@@ -60,7 +67,8 @@ html {
   position: relative;
   width: 120px;
   height: 40px;
-
+  left: 13rem;
+  top: 3.5rem;
   background: #343434;
   border-radius: 50px;
   font-family: "Roboto";
@@ -76,22 +84,28 @@ html {
 
 .center {
   margin-left: 123px;
-  border: 0;
+  border: 1px solid black;
   border-radius: 2px;
   border-bottom: solid;
-  background: #f3fbee;
+
   padding: 8px 3px;
-  width: 502px;
+  position: relative;
+  top: 4rem;
   font-size: 15px;
 }
 
 .text2 {
-  margin-left: 123px;
+  display: flex;
+  justify-content: center;
   font-family: "Roboto";
   font-style: normal;
   font-weight: 400;
   font-size: 24px;
-  line-height: 28px;
+  line-height: 3rem;
+  align-items: center;
+  margin-top: 1.5rem;
+  position: relative;
+  top: 3rem;
 }
 
 .registerText {
@@ -100,11 +114,77 @@ html {
   font-weight: 400;
   font-size: 24px;
   line-height: 28px;
+  margin-left: 0.4rem;
   color: black;
 }
 
 main-div {
   position: fixed;
+  background-color: #FAF4B7 !important;
+
 }
 
 /* Responsive design */
+@media only screen and (max-width: 600px) {
+  .logoImage {
+    position: absolute;
+    text-align: center;
+    width: 100%;
+    height: 16.028125rem;
+    left: -1px;
+    top: 10px;
+    display: flex
+  }
+
+  .submit_button {
+
+    position: relative;
+    width: 120px;
+    height: 40px;
+    left: 1.05rem;
+    top: 3.5rem;
+    background: #343434;
+    border-radius: 50px;
+    font-family: "Roboto";
+    font-style: normal;
+    font-weight: 400;
+    font-size: 20px;
+    line-height: 28px;
+    text-align: center;
+    margin-left: 113px;
+    margin-top: 20px;
+    color: #ffffff;
+
+  }
+
+
+  .input {
+    display: inline-block;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+    width: 96%;
+    height: 300px;
+    left: 8px;
+    top: 303px;
+    background: #f3fbee;
+    box-shadow: 0px 4px 4px rgb(0 0 0 / 25%), inset 0px 4px 4px rgb(0 0 0 / 25%);
+    border-radius: 30px;
+  }
+
+  .text {
+    position: static;
+    height: 42px;
+    left: -2px;
+    top: 201px;
+    padding-top: 49px;
+    font-family: "Roboto";
+    font-style: normal;
+    font-weight: 500;
+    font-size: 36px;
+    line-height: 42px;
+    width: 100%;
+    text-align: center;
+    color: #000000;
+  }
+}
