@@ -64,6 +64,10 @@ function App(props) {
         </Box>
         <Box id="appbox" w={["93.5%","92.5%","95%"]} mt={["1%","3.5%"]} h={["88vh","84vh","80vh"]}>
           <Box position="absolute" top="8%" left="4%">
+
+
+
+
             <Box
               className="notification"
               mb={["4%","2%"]}
@@ -86,6 +90,9 @@ function App(props) {
                 </Button>
               </Box>
             </Box>
+
+
+
             <Box
               className="notification"
               mb={["4%","2%"]}
@@ -107,6 +114,7 @@ function App(props) {
                 </Button>
               </Box>
             </Box>
+            
           </Box>
         </Box>
       </Box>

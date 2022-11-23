@@ -1,10 +1,10 @@
 import {ReactHTMLElement, useState, useEffect} from "react";
 import graph from "../../../assets/graph.png";
-import { BsDownload } from "react-icons/bs";
+import { BsArrowCounterclockwise, BsDownload } from "react-icons/bs";
 import { FiEdit2 } from "react-icons/fi";
 import { IoIosColorPalette } from "react-icons/io";
 import scaleIcon from "../../../assets/scale-icon.png";
-import { Menu, MenuButton, MenuList, MenuItem, Button } from "@chakra-ui/react";
+import { Menu, MenuButton, MenuList, MenuItem, Button, cookieStorageManager, color } from "@chakra-ui/react";
 import { useSearchParams } from "react-router-dom";
 import Bar from './bar';
 import axios from "axios";
@@ -18,55 +18,105 @@ function GraphData() {
   const cycles = 0;
   const toast = useToast();
   const [editor, setEditor] = useState(0);
-  const [ele, setEle] = useState({header: localStorage.getItem("parchuranheader"), footer:localStorage.getItem("parchuranfooter")})
-  const [content, setContent] = useState({
-    //lables will be times values
-    labels: ["0.0.0.0", "0.0.0.1"],
-    datasets: [
-      {
-        //this lable will be header name
-        label: "first header",
-        data: [33, 53],
-        fill: true,
-        backgroundColor: "rgba(75,192,192,0.2)",
-        borderColor: "rgba(75,192,192,1)"
-      },
-      {
-        //this lable will be header name
-        label: "second",
-        data: [93, 25],
-        fill: false,
-        borderColor: "#742774"
-      }
-    ]
-  });
+  const [ele, setEle] = useState({header: localStorage.getItem("parchuranheader"), footer:localStorage.getItem("parchuranfooter")});
 
-
-  useEffect(() => {
-    setInterval(() =>{
-      console.log("request has been sent");
-      axios.post("http://localhost:8080/db/get-data", {
-          token: ProjectID, 
-          secret: localStorage.getItem("token"),
-        }).then((resolve)=>{
-
-            let HEADERS = [];
-            let VALUES = [];
-            let LABELS = [];
-
-
-            //that zeroth indexing can be fixed here
-            resolve.data._values[0].Devices.map(async (value, key)=>{
-              if(value.val){
-                console.log(value.val)
-              }
-            })
-            setContent({labels: HEADERS, datasets:VALUES})
-      });
+  function genColor() {
+    return `rgba(${Math.floor(Math.random() * (250 - 1 + 1)) + 1},${Math.floor(Math.random() * (250 - 1 + 1)) + 1},${Math.floor(Math.random() * (250 - 1 + 1)) + 1},${Math.floor(Math.random() * (250 - 1 + 1)) + 1})`
+  }
   
-    }, 2000)
-  }, [])
+  let colors = [];
+  for(let i = 0; i<100; i++){
+    colors[i] = genColor();
+  }
 
+  const dataSet = {
+  labels: ['14:31:18', '14:31:43', '14:32:08', '14:31:33', '14:31:58', '14:32:23'],
+  datasets: [
+    {
+      //this lable will be header name
+      label: "Controller1_pv",
+      data: [32.2, 31.3, 32.1, 31.7, 32, 31.4, 31.8],
+      fill: true,
+      backgroundColor: "rgba(70,192,192,0.2)",
+      borderColor: "rgba(75,192,192,1)"
+    },
+    {
+      //this lable will be header name
+      label: "Controller1_sv",
+      data: [10, 20, 4, 32, 18, 42],
+      fill: false,
+      borderColor: "#742774"
+    }
+  ]}
+
+
+  const [content, setContent] = useState(dataSet);
+  useEffect(()=>{
+
+    const dataSet2 = {
+      labels: ['14:31:18', '14:31:43'],
+      datasets: [
+        {
+          //this lable will be header name
+          label: "Controller1_pv",
+          data: [32.2, 31.8],
+          fill: true,
+          backgroundColor: "rgba(70,192,192,0.2)",
+          borderColor: "rgba(75,192,192,1)"
+        },
+        {
+          //this lable will be header name
+          label: "Controller1_sv",
+          data: [10, 20],
+          fill: false,
+          borderColor: "#742774"
+        }
+      ]}
+
+      let _draft = [{}];
+
+    setInterval(() => {
+      axios.post("http://localhost:8080/db/get-data", {secret: localStorage.getItem("token"), token: ProjectID}).then(async (results)=>{
+        if(!results?.data?._values) {console.log("something went wrong while fetching data")}
+      
+        let HEADERS = [];
+        let LABELS = [];
+        console.log(results.data._values[0].Devices)
+        results.data._values[0].Devices.map((_values, _key)=>{
+          let internalProjectsValues = [];
+          _values.val.map((__val, __key)=>{
+            let _date = `${new Date(__val.val.time).getDay()} - ${new Date(__val.val.time).getHours()}: ${new Date(__val.val.time).getMinutes()}: ${new Date(__val.val.time).getSeconds()}`
+            LABELS[__key] = _date;
+            internalProjectsValues[internalProjectsValues.length] = __val.val.val ?? __val.val;
+          });
+
+          HEADERS[_key] = {
+            label: _values.Header ,
+            data: internalProjectsValues,
+            fill: true,
+            backgroundColor: "rgba(70,192,192,0.2)",
+            borderColor: colors[_key]
+          }
+
+        });
+        console.log(LABELS)
+        _draft = {
+          labels: LABELS,
+          datasets: HEADERS
+        };
+
+        //draft will be the final component to render
+        console.log(_draft);
+
+      });
+
+      setContent(_draft);
+      console.log('_--------');
+    }, 3000);
+
+
+  }, [])
+  
   return (
     <>
       <div className="data-container">

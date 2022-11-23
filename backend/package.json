@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "start": "set NODE_ENV=dev && ts-node App.ts",
-    "jaimatadi":"echo 😀👽 'Pushing code to your github repo(production)' && cd .. && git add . && git commit -m \"new\" && git push temp_aws"
+    "jaimatadi": "echo 😀👽 'Pushing code to your github repo(production)' && cd .. && git add . && git commit -m \"new\" && git push temp_aws"
   },
   "keywords": [
     "vision web",
@@ -31,6 +31,8 @@
     "passport": "^0.6.0",
     "passport-google-oauth20": "^2.0.0",
     "passport-local": "^1.0.0",
+    "swagger-jsdoc": "^6.2.5",
+    "swagger-ui-express": "^4.5.0",
     "uuid": "^9.0.0"
   }
 }

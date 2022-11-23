@@ -6,44 +6,35 @@ import {registerables} from 'chart.js';
 import axios from "axios";
 
 const BarChart = (PROPS) => {
+  console.log({L:PROPS.PROPS})
+  
+// const random = (min, max) => Math.floor(Math.random() * (max - min)) + min;
+// const [data, setData] = useState({
+//     labels: ['14:31:18', '14:31:43', '14:32:08', '14:31:33', '14:31:58', '14:32:23'],
+//     datasets: [
+//       {
+//         //this lable will be header name
+//         label: "Controller1_pv",
+//         data: [32.2, 31.3, 32.1, 31.7, 32, 31.4, 31.8],
+//         fill: true,
+//         backgroundColor: "rgba(70,192,192,0.2)",
+//         borderColor: "rgba(75,192,192,1)"
+//       },
+//       {
+//         //this lable will be header name
+//         label: "Controller1_sv",
+//         data: [10, 20, 4, 32, 18, 42],
+//         fill: false,
+//         borderColor: "#742774"
+//       }
+//     ]
+// })
 
-//   let [Label, setLabel] = useState([0]);
-//   let [Dataset, setDataset] = useState([0]);
+// setTimeout(()=>{
+//   setData(PROPS.PROPS)
+// }, )
 
-const datasets = [31.8, 32, 33, 31.7, 31.1, 30.3, 32.2];
-const random = (min, max) => Math.floor(Math.random() * (max - min)) + min;
-let pvset = datasets[random(0, 6)];
-let labels = ['14:31:18', '14:31:43', '14:32:08', '14:31:33', '14:31:58', '14:32:23']
-setTimeout(()=>{
-
-}, 700)
-
-
-const [data, setData] = useState({
-  //lables will be times values
-  labels: labels,
-  datasets: [
-    {
-      //this lable will be header name
-      label: "Controller1_pv",
-      data: [32.2, 31.3, 32.1, 31.7, 32, 31.4, 31.8],
-      fill: true,
-      backgroundColor: "rgba(70,192,192,0.2)",
-      borderColor: "rgba(75,192,192,1)"
-    },
-    {
-      //this lable will be header name
-      label: "Controller1_sv",
-      data: [10, 20, 4, 32, 18, 42],
-      fill: false,
-      borderColor: "#742774"
-    }
-  ]
-});
-
-let time = [`${new Date().getHours()}:${new Date().getMinutes()}:${new Date().getSeconds()}`]
-
-
+// let time = [`${new Date().getHours()}:${new Date().getMinutes()}:${new Date().getSeconds()}`]
 
   Chart.register(CategoryScale);
   Chart.register(ArcElement);
@@ -116,7 +107,7 @@ let time = [`${new Date().getHours()}:${new Date().getMinutes()}:${new Date().ge
   return (
 
       <Line id='grid'
-        data={data}
+        data={PROPS.PROPS}
         width="70%"
         height="40%"
       />

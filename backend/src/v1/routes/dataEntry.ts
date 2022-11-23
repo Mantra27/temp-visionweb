@@ -5,6 +5,8 @@ const jwt = require("jsonwebtoken");
 const Entry = require("../models/entry");
 const User = require("../models/user");
 const mongoose = require("mongoose")
+const {performance} = require('perf_hooks');
+
 require('dotenv').config({path: path.resolve(__dirname + '/../.env')});
 
 //-----------------------------------
@@ -28,6 +30,7 @@ router.post("/tud", (req:any, res:any, next:any)=>{
 });
 
 router.post("/update-data", (req:any, res:any)=>{
+    const _start = performance.now();
     let {token = null, metadata = null} = req.body;
     if(!metadata || !token) return res.status(200).send({status:404, message:"a query(s) is missing from client, try checking your posting data with 2 params a TOKEN and A METADATA"})
     metadata = JSON.parse(metadata)
@@ -47,24 +50,27 @@ router.post("/update-data", (req:any, res:any)=>{
             let newDataFromClient = metadata[0].Misc.Devices; //array of devices from api req
             let newEntryTime = new Date().getTime();
 
-
             //first entry
             if(promiseData.Misc[0].Devices.length == 0){
-
                 newDataFromClient.map(async (value:any, key:any)=>{
-                    promiseData.Misc[0].Devices[key] = {Header: value.Header, val:{val:value.val, time: newEntryTime}}
+                    promiseData.Misc[0].Devices[key] = {Header: value.Header, val:{val:{val:parseInt(value.val), time: newEntryTime}}}
                 });
-
                 found.save();
             }
-
+            //not the first entry   
             else{
-
+                let keys:any = [];
                 newDataFromClient.map(async (value:any, key:any)=>{
                     value.val = parseInt(value.val);
-                    promiseData.Misc[0].Devices[key].val.push({Header: value.Header, val:{val:value.val, time: newEntryTime}})
-                });
 
+                    promiseData.Misc[0].Devices.map((_value:any, _key:any)=>{
+                        if(_value.Header == value.Header){
+                            keys[keys.length] = _key;
+                        }
+                    })
+                    promiseData.Misc[0].Devices[keys[key]]?.val.push({Header: value.Header, val:{val:value.val, time: newEntryTime}})
+                });
+            
                 newDataFromClient.map(async (value:any, key:any)=>{
                     let shouldIncludeIt = true;
                     promiseData.Misc[0].Devices.map((V:any, K:any)=>{
@@ -80,8 +86,9 @@ router.post("/update-data", (req:any, res:any)=>{
                 });
                 found.save()
             }
-
-            return res.send("ok");
+            const _stop = performance.now();
+            const _latency = _stop - _start;
+            return res.status(200).send({status: 200, message: `code executed successfully`, serverLatency: _latency})
 
         }).catch((E:any)=>{
             return res.status(200).send({status: 404, message:E});
