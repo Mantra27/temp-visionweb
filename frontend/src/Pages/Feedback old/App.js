@@ -17,13 +17,11 @@ function App(props) {
     } // eslint-disable-next-line
   }, []);
   return (
-    <div id="feedback">
+    <>
       <DrawerMenu onClose={props.onClose} isOpen={props.isOpen} />
-      <div className="header-center">
       <Header onOpen={props.onOpen} />
       <Input />
-      </div>
-    </div>
+    </>
   );
 }
 

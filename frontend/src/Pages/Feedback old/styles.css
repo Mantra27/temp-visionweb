@@ -1,0 +1,85 @@
+.parent-div-feedback {
+    margin-top: 7rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    background-color: white;
+    gap: 15px;
+
+}
+
+.settings-icon{
+    margin: left;
+}
+
+.bg-white {
+    background-color: white;
+}
+
+.title {
+    background-color: #455874;
+    border-radius: 16px;
+    width: 80%;
+    padding: 1rem;
+    font-size: 40px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: white;
+    text-align: center;
+}
+
+.feedback-form {
+    height: 40rem;
+    background-color: var(--light-blue);
+    width: 80%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 16px;
+    flex-direction: column;
+
+}
+
+.input-field {
+    height: 34rem;
+    background-color: #EFF6EC;
+    width: 95%;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    border-radius: 16px;
+}
+
+.all-inputs {
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+    width: 90%;
+    margin-top: 5rem;
+    height: auto;
+}
+
+.input-unique {
+    border: 0;
+    border-bottom: solid black;
+    /* width: 100%; */
+}
+
+.links-for-feedbackform {
+    width: 91%;
+    display: flex;
+    gap: 35px;
+    font-size: 1.5rem;
+}
+
+.custom-upload {
+    font-size: 1.5rem;
+}
+
+
+.custom-upload {
+    color: black;
+    cursor: pointer;
+}

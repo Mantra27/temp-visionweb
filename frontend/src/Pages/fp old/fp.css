@@ -11,33 +11,17 @@ html {
   font-family: "Roboto";
 }
 
-.main-input {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  position: relative;
-  top: 84px;
-
-}
-
-.main-logo {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-}
-
 .logoImage {
-
+  position: absolute;
+  text-align: center;
   width: 26.4375rem;
   height: 16.028125rem;
-
+  left: 550px;
+  top: 10px;
   display: flex;
 }
 
 #input-container {
-  background-color: #A8DADC;
   max-width: 60rem;
 }
 
@@ -48,19 +32,18 @@ html {
 }
 
 .input {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
+  display: inline-block;
   justify-content: center;
+  align-items: center;
   position: relative;
   width: 750px;
   height: 300px;
-
-
+  left: 365px;
+  top: 250px;
 
   background: #f3fbee;
-  box-shadow: 0px 4px 2px rgba(0, 0, 0, 0.10),
-    0px 4px 2px rgba(0, 0, 0, 0.10);
+  box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25),
+    inset 0px 4px 4px rgba(0, 0, 0, 0.25);
   border-radius: 30px;
 }
 
@@ -68,7 +51,7 @@ html {
   position: static;
   height: 42px;
   left: -20px;
-
+  top: 206px;
   padding-top: 36px;
 
   font-family: "Roboto";
@@ -81,10 +64,12 @@ html {
 }
 
 .submit_button {
-
+  position: relative;
   width: 120px;
   height: 40px;
-  background: #1D3557;
+  left: 13rem;
+  top: 3.5rem;
+  background: #343434;
   border-radius: 50px;
   font-family: "Roboto";
   font-style: normal;
@@ -92,20 +77,20 @@ html {
   font-size: 20px;
   line-height: 28px;
   text-align: center;
-  position: relative;
-  top: 20px;
+  margin-left: 120px;
+  margin-top: 20px;
   color: #ffffff;
 }
 
 .center {
   margin-left: 123px;
+  border: 1px solid black;
+  border-radius: 2px;
+  border-bottom: solid;
 
-  background-color: #ffffff !important;
-  border-radius: 10px !important;
-  width: 90% !important;
-
-
-
+  padding: 8px 3px;
+  position: relative;
+  top: 4rem;
   font-size: 15px;
 }
 
@@ -115,7 +100,7 @@ html {
   font-family: "Roboto";
   font-style: normal;
   font-weight: 400;
-  font-size: 20px;
+  font-size: 24px;
   line-height: 3rem;
   align-items: center;
   margin-top: 1.5rem;
@@ -127,16 +112,16 @@ html {
   font-family: "Roboto";
   font-style: normal;
   font-weight: 400;
-  font-size: 20px;
+  font-size: 24px;
   line-height: 28px;
   margin-left: 0.4rem;
   color: black;
 }
 
-.main-div {
+main-div {
   position: fixed;
-  height: 100vh;
-  width: 100%;
+  background-color: #FAF4B7 !important;
+
 }
 
 /* Responsive design */
@@ -153,65 +138,37 @@ html {
 
   .submit_button {
 
-
+    position: relative;
     width: 120px;
     height: 40px;
-    margin: 0;
-
-    background: #1D3557;
+    left: 1.05rem;
+    top: 3.5rem;
+    background: #343434;
     border-radius: 50px;
     font-family: "Roboto";
     font-style: normal;
     font-weight: 400;
     font-size: 20px;
-
+    line-height: 28px;
     text-align: center;
-
+    margin-left: 113px;
+    margin-top: 20px;
     color: #ffffff;
 
   }
 
-  .main-input {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-
-    justify-content: center;
-    position: relative;
-    top: 7px;
-
-  }
-
-  .text {
-    position: static;
-    height: 42px;
-    left: -20px;
-    padding-top: 36px;
-    font-family: "Roboto";
-    font-style: normal;
-    font-weight: 500;
-    font-size: 28px;
-    line-height: 42px;
-    text-align: center;
-    color: #000000;
-  }
-
-  .main-div {
-    position: fixed;
-    height: 100vh;
-    width: 100%;
-  }
 
   .input {
-
+    display: inline-block;
     justify-content: center;
+    align-items: center;
     position: relative;
     width: 96%;
     height: 300px;
-    text-align: center;
+    left: 8px;
     top: 303px;
-    background: #FFFFFF;
-    box-shadow: 0px 4px 2px rgb(0 0 0 / 10%),  0px 4px 2px rgb(0 0 0 / 10%);
+    background: #f3fbee;
+    box-shadow: 0px 4px 4px rgb(0 0 0 / 25%), inset 0px 4px 4px rgb(0 0 0 / 25%);
     border-radius: 30px;
   }
 

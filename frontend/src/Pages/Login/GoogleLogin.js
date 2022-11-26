@@ -8,7 +8,7 @@ function Login(){
     const navigate = useNavigate();
     const onSuccess = (response) => {
         console.log('response will be sved in ls')
-        axios.post("http://localhost:8080/auth/googleCallback", {
+        axios.post("http://15.207.232.194:8080/auth/googleCallback", {
             body:response
         }).then((res)=>{
             if(res.data.status === 200){

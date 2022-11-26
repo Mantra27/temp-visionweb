@@ -76,7 +76,7 @@ function GraphData() {
       let _draft = [{}];
 
     setInterval(() => {
-      axios.post("http://localhost:8080/db/get-data", {secret: localStorage.getItem("token"), token: ProjectID}).then(async (results)=>{
+      axios.post("http://15.207.232.194:8080/db/get-data", {secret: localStorage.getItem("token"), token: ProjectID}).then(async (results)=>{
         if(!results?.data?._values) {console.log("something went wrong while fetching data")}
       
         let HEADERS = [];
@@ -196,7 +196,7 @@ function GraphData() {
                   localStorage.setItem("parchuranheader", document.getElementById('headerdiv').innerText)
                   localStorage.setItem("parchuranfooter", document.getElementById('footerdiv').innerText)
 
-                  axios.post("http://localhost:8080/configure-project", {secret: localStorage.getItem("token"), header:document.getElementById('headerdiv').innerText, footer: document.getElementById("footerdiv").innerText, project: ProjectID}).then(async (results)=>{
+                  axios.post("http://15.207.232.194:8080/configure-project", {secret: localStorage.getItem("token"), header:document.getElementById('headerdiv').innerText, footer: document.getElementById("footerdiv").innerText, project: ProjectID}).then(async (results)=>{
                     if(results.data.status != 200){
                       toast({
                         title: "something went wrong,",

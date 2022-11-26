@@ -7,7 +7,7 @@ import { useMediaQuery } from "react-responsive";
 
 function App() {
   React.useLayoutEffect(() => {
-    document.title = "Forgot password";
+    document.title = "Fp";
   }, []);
   return (
     <div className="main-div">
