@@ -16,6 +16,7 @@ function Header(props) {
         }}/>
       </div>
 
+
       <div className="texting">
         <p id="text">Feedback and Support</p>
       </div>
